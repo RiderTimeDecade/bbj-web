@@ -194,12 +194,12 @@ public class EmployeeController {
      */
     @PostMapping("/task/submit")
     @ResponseBody
-    public String submitTask(Long taskId,String taskResult, HttpSession session) {
+    public String submitTask(Long taskId, String taskResult, HttpSession session) {
         // 获取雇员登录信息
         Employee employee = (Employee) session.getAttribute("employee");
 
         // 雇员提交信息
-        taskService.submitTask(employee.getId(), taskId,taskResult);
+        taskService.submitTask(employee.getId(), taskId, taskResult);
 
         return "任务提交成功 ，等待雇主确认！";
     }

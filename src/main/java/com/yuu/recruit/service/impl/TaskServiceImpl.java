@@ -247,11 +247,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void submitTask(Long id, Long taskId,String taskResult) {
+    public void submitTask(Long id, Long taskId, String taskResult) {
         // 根据任务主键 ID 获取任务
         Task task = taskMapper.selectByPrimaryKey(taskId);
         // 设置任务中标雇员
         task.setEmployeeId(id);
+        // 设置任务结果（图片路径）
         task.setTaskResult(taskResult);
         // 设置任务状态
         task.setTaskStatus(TaskStatus.SUBMIT);

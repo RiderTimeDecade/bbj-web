@@ -107,6 +107,7 @@ public interface TaskService {
      *
      * @param id     雇员 ID
      * @param taskId 任务 ID
+     * @param taskResult 任务结果（图片路径）
      */
     void submitTask(Long id, Long taskId, String taskResult);
 

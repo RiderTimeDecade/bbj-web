@@ -40,11 +40,15 @@ public class EmployeeBidController {
      * @param bidPrice 投标价格
      * @param timeNumber 完成时间
      * @param timType 完成时间类型
+     * @param bidImg1 投标图片1
+     * @param bidImg2 投标图片2
      * @param session
      * @return
      */
     @PostMapping("employee/bid")
-    public String bid(Long taskId, Double bidPrice, int timeNumber, String timeType, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String bid(Long taskId, String bidPrice, int timeNumber, String timeType, 
+                     String bidImg1, String bidImg2,
+                     HttpSession session, RedirectAttributes redirectAttributes) {
         // 获取 session 中的雇员信息
         Employee employee = (Employee) session.getAttribute("employee");
 
@@ -56,16 +60,45 @@ public class EmployeeBidController {
             // 重定向到任务页面
             return "redirect:/task/page?taskId=" + taskId;
         }
+        
+        // 验证图片是否已上传
+        if(bidImg1 == null || bidImg1.isEmpty() || bidImg2 == null || bidImg2.isEmpty()) {
+            redirectAttributes.addFlashAttribute("msg", "请上传两张案例图片！");
+            return "redirect:/task/page?taskId=" + taskId;
+        }
+        
+        // 验证价格格式
+        Double bidPriceValue;
+        try {
+            // 移除可能的货币符号和空格
+            String cleanPrice = bidPrice.trim().replaceAll("[¥$,\\s]", "");
+            bidPriceValue = Double.parseDouble(cleanPrice);
+            
+            // 验证投标价格是否合理
+            if (bidPriceValue <= 0) {
+                redirectAttributes.addFlashAttribute("msg", "投标价格必须大于0！");
+                return "redirect:/task/page?taskId=" + taskId;
+            }
+        } catch (NumberFormatException e) {
+            // 价格格式无效
+            redirectAttributes.addFlashAttribute("msg", "请输入有效的投标价格！");
+            return "redirect:/task/page?taskId=" + taskId;
+        }
 
         // 创建一个投标对象，设置值
         Bid bid = new Bid();
         bid.setId(IDUtil.getRandomId());
         bid.setTaskId(taskId);
         bid.setEmployeeId(employee.getId());
-        bid.setBidPrice(bidPrice);
+        bid.setBidPrice(bidPriceValue); // 使用验证后的价格
         String deliveryDesc = timeNumber + timeType;
         bid.setDeliveryDesc(deliveryDesc);
         bid.setBidStatus(BidStatus.NO_BIT);
+        
+        // 设置案例图片路径（合并两个图片路径，以逗号分隔）
+        String bidImages = bidImg1 + "," + bidImg2;
+        // 假设Bid类有一个字段用于存储案例图片
+        bid.setCaseImg(bidImages);
 
         // 计算到期时间
         Date deliveryTime = null;
@@ -81,10 +114,15 @@ public class EmployeeBidController {
         // 设置创建时间
         bid.setCreateTime(new Date());
 
-        // 调用 bidService 添加到数据库
-        bidService.bid(bid);
-
-        // 下标成功，重定向到任务列表页
-        return "redirect:/task/list";
+        try {
+            // 调用 bidService 添加到数据库
+            bidService.bid(bid);
+            // 下标成功，重定向到任务列表页
+            return "redirect:/task/list";
+        } catch (Exception e) {
+            // 捕获所有可能的异常
+            redirectAttributes.addFlashAttribute("msg", "投标失败，请检查输入内容是否正确：" + e.getMessage());
+            return "redirect:/task/page?taskId=" + taskId;
+        }
     }
 }

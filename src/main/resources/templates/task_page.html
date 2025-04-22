@@ -12,6 +12,42 @@
     ================================================== -->
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/colors/blue.css">
+    
+    <!-- 自定义样式 -->
+    <style>
+        .upload-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        
+        .upload-container-1 {
+            border-left: 3px solid #2a41e8;
+        }
+        
+        .upload-container-2 {
+            border-left: 3px solid #f3cf74;
+        }
+        
+        .upload-status {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .status-success {
+            color: #28a745;
+        }
+        
+        .status-error {
+            color: #dc3545;
+        }
+        
+        .status-loading {
+            color: #17a2b8;
+        }
+    </style>
 
 </head>
 <body>
@@ -293,8 +329,8 @@
                                     <span class="bidding-detail">设定您的<strong>预期价格</strong></span>
 
                                     <!-- Price Slider -->
-                                    <div class="bidding-value">￥<span id="biddingVal"></span></div>
-                                    <input name="bidPrice" class="bidding-slider" type="text" value="" data-slider-handle="custom" data-slider-currency="$" th:attr="data-slider-min=${task.feesLow}, data-slider-max=${task.feesHigh}"  data-slider-value="auto" data-slider-step="10" data-slider-tooltip="hide" />
+                                    <div class="bidding-value">￥[[${task.feesHigh}]]</div>
+                                    <input name="bidPrice" id="bidPrice" type="hidden"/>
 
                                     <!-- Headline -->
                                     <span class="bidding-detail margin-top-30">设置您的 <strong>交货时间</strong></span>
@@ -315,6 +351,34 @@
                                                 <option value="天">天</option>
                                                 <option value="月">月</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 上传图片区域 -->
+                                    <span class="bidding-detail margin-top-30">上传案例图片 <strong>（必须上传两张）</strong></span>
+                                    <div class="upload-container upload-container-1" id="upload-container-1">
+                                        <h4>图片1</h4>
+                                        <div class="submit-field">
+                                            <div class="uploadButton margin-top-10">
+                                                <input class="uploadButton-input" type="file" accept="image/*" id="uploadImg1" onchange="handleImageUpload(1)"/>
+                                                <label class="uploadButton-button ripple-effect" for="uploadImg1">选择文件</label>
+                                                <span class="uploadButton-file-name" id="img1Name">未选择文件</span>
+                                            </div>
+                                            <div class="upload-status" id="status1"></div>
+                                            <input type="hidden" name="bidImg1" id="bidImg1" />
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="upload-container upload-container-2" id="upload-container-2">
+                                        <h4>图片2</h4>
+                                        <div class="submit-field">
+                                            <div class="uploadButton margin-top-10">
+                                                <input class="uploadButton-input" type="file" accept="image/*" id="uploadImg2" onchange="handleImageUpload(2)"/>
+                                                <label class="uploadButton-button ripple-effect" for="uploadImg2">选择文件</label>
+                                                <span class="uploadButton-file-name" id="img2Name">未选择文件</span>
+                                            </div>
+                                            <div class="upload-status" id="status2"></div>
+                                            <input type="hidden" name="bidImg2" id="bidImg2" />
                                         </div>
                                     </div>
 
@@ -385,7 +449,94 @@
         if (msg != "") {
             layer.msg(msg)
         }
-    })
+        
+        
+       
+        
+        // 表单提交前验证价格和图片
+        $('form').on('submit', function(e) {
+            var bidPrice = $('#bidPrice').val();
+            if (!bidPrice || isNaN(parseFloat(bidPrice)) || parseFloat(bidPrice) <= 0) {
+                e.preventDefault();
+                layer.msg('请设置有效的投标价格！');
+                return false;
+            }
+            
+            // 验证两张图片是否已上传
+            var img1 = $('#bidImg1').val();
+            var img2 = $('#bidImg2').val();
+            if(!img1 || !img2) {
+                e.preventDefault();
+                layer.msg('请上传两张案例图片！');
+                return false;
+            }
+            
+            return true;
+        });
+    });
+    
+    // 处理图片上传
+    function handleImageUpload(imgNum) {
+        var fileInput = document.getElementById('uploadImg' + imgNum);
+        var fileName = fileInput.files[0] ? fileInput.files[0].name : "未选择文件";
+        
+        // 使用更精确的选择器，确保只更新当前图片的文件名
+        document.getElementById('img' + imgNum + 'Name').textContent = fileName;
+        
+        // 如果选择了文件，上传到服务器
+        if(fileInput.files.length > 0) {
+            var formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            // 添加图片编号参数，避免服务器端覆盖
+            formData.append('imgNum', imgNum);
+            
+            // 显示上传中状态
+            document.getElementById('status' + imgNum).innerHTML = '<span class="status-loading">上传中...</span>';
+            var loadingIndex = layer.msg("正在上传图片" + imgNum + "...", {time: 0});
+            
+            $.ajax({
+                url: '/uploadBidImage',  // 使用专门的投标图片上传接口
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // 关闭上传中提示
+                    layer.close(loadingIndex);
+                    
+                    var result;
+                    if (typeof response === 'string') {
+                        // 解析响应字符串，去除可能的HTML标签
+                        result = JSON.parse(response.replace(/<.*?>/ig,""));
+                    } else {
+                        result = response;
+                    }
+                    
+                    if (result.success === false) {
+                        layer.msg("图片" + imgNum + "上传失败: " + result.message);
+                        document.getElementById('status' + imgNum).innerHTML = '<span class="status-error">上传失败，请重试</span>';
+                        return;
+                    }
+                    
+                    // 保存返回的文件路径到隐藏字段
+                    document.getElementById('bidImg' + imgNum).value = result.filePath;
+                    // 更新为上传成功状态
+                    document.getElementById('status' + imgNum).innerHTML = '<span class="status-success">上传成功</span>';
+                    layer.msg("图片" + imgNum + "上传成功");
+                },
+                error: function(xhr, status, error) {
+                    // 关闭上传中提示
+                    layer.close(loadingIndex);
+                    layer.msg("图片上传失败，请重试: " + error);
+                    document.getElementById('status' + imgNum).innerHTML = '<span class="status-error">上传失败: ' + error + '</span>';
+                }
+            });
+        } else {
+            // 清除状态和隐藏字段
+            document.getElementById('status' + imgNum).innerHTML = '';
+            document.getElementById('bidImg' + imgNum).value = '';
+        }
+    }
 </script>
 
 </body>

@@ -15,11 +15,11 @@
 
 </head>
 <body class="gray">
-	<div id="popupImg" style="display:none;z-index:9999;position:absolute;width:480px;height:270px;background-color:#FFCCCC;border:1px;border-color:#993333;display:flex;align-items:center">
-	    <!-- 弹窗内容 -->
-		<input th:id="dropzFiles" th:onChange="'uploadTaskResult()'" th:name="dropzFiles" class="file-upload" type="file" accept="image/*" placeholder="上传结果图" multiple/>
-		<input type="hidden" id="curTaskID"/>
-	</div>
+<!--	<div id="popupImg" style="display:none;z-index:9999;position:absolute;width:480px;height:270px;background-color:#FFCCCC;border:1px;border-color:#993333;display:flex;align-items:center">-->
+<!--	    &lt;!&ndash; 弹窗内容 &ndash;&gt;-->
+<!--		<input th:id="dropzFiles" th:onChange="'uploadTaskResult()'" th:name="dropzFiles" class="file-upload" type="file" accept="image/*" placeholder="上传结果图" multiple/>-->
+<!--		<input type="hidden" id="curTaskID"/>-->
+<!--	</div>-->
 
 <!-- Wrapper -->
 <div id="wrapper">
@@ -194,8 +194,7 @@
                                         </div>
 
                                         <!-- Task Details -->										
-                                        <span th:if="${task.taskStatus == 1}" class="button button-sliding-icon ripple-effect" th:onclick="'showImg('+ ${task.id} +')'">
-											完成任务<i class="icon-material-outline-arrow-right-alt"></i></span>
+                                        <span th:if="${task.taskStatus == 1}" class="button button-sliding-icon ripple-effect" th:onclick="'showImg(' + ${task.id} + ')'">完成任务<i class="icon-material-outline-arrow-right-alt"></i></span>
                                         <span th:if="${task.taskStatus == 2}" class="button">等待雇主确认完成</span>
 
                                     </li>
@@ -250,9 +249,15 @@
 <script>
 	$(document).ready(function() {
 		$("#popupImg").hide();
-	    $("#popupImg").click(function() {
-	        $(this).hide();
+	    $("#popupImg").click(function(e) {
+            // 阻止点击弹窗内部时关闭弹窗
+            e.stopPropagation();
 	    });
+        
+        // 点击弹窗外部关闭弹窗
+        $(document).click(function() {
+            $("#popupImg").hide();
+        });
 		
 		var windowHeight = $(window).height();
 		var windowWidth = $(window).width();
@@ -263,49 +268,62 @@
 		    'top': (windowHeight - elementHeight) / 2 + 'px',
 		    'left': (windowWidth - elementWidth) / 2 + 'px'
 		});
-		
 	});
 
-
-	function showImg(curID){
-		$("#curTaskID").val(curID);
-		$("#popupImg").show();
-	}
+	// function showImg(curID){
+	// 	$("#curTaskID").val(curID);
+    //     $("#img1Path").val("");
+    //     $("#img2Path").val("");
+	// 	$("#popupImg").show();
+	// }
 		
-	function uploadTaskResult() {
+	function uploadTaskResult(imgNum) {
 		taskId = $("#curTaskID").val();
+        var fileElementId = 'dropzFiles' + imgNum;
 	    $.ajaxFileUpload({
 	        url:'/uploadTaskResult',//用于文件上传的服务器端请求地址
-	        secureuri:false ,//一般设置为false
-	        fileElementId:'dropzFiles',//文件上传控件的id属性  <input type="file" id="upload" name="upload" />
+	        secureuri:false,//一般设置为false
+	        fileElementId: fileElementId,//文件上传控件的id属性
 	        dataType: 'text',//返回值类型 一般设置为json
 	        success: function (responseText)  //服务器成功响应处理函数
 	        {
 	            var obj = $.parseJSON(responseText.toString().replace(/<.*?>/ig,""));
-            	<!--
-					 $("#taskResult").val(obj.filePath)
-					-->
-				completeTask(taskId,obj.filePath);
+                if(imgNum == 1) {
+                    $("#img1Path").val(obj.filePath);
+                    layer.msg("第1张图片上传成功");
+                } else {
+                    $("#img2Path").val(obj.filePath);
+                    layer.msg("第2张图片上传成功");
+                }
 	        },
+            error: function() {
+                layer.msg("图片上传失败，请重试");
+            }
 	    });
-		
 	}
+
+    function submitBothImages() {
+        var img1 = $("#img1Path").val();
+        var img2 = $("#img2Path").val();
+        
+        if(!img1 || !img2) {
+            layer.msg("请上传两张图片后再提交");
+            return;
+        }
+        
+        completeTask($("#curTaskID").val(), img1 + "," + img2);
+    }
 
     /**
      * 完成任务
      */
-    function completeTask(taskId,taskResult) {
-		if(taskResult.split(";").length<2){
-			alert("需要上传两张图片哦，请重新操作！");
-			return;			
-		}
-        // 确认框
+    function completeTask(taskId, imgFiles) {
         layer.confirm('您确认提交完成任务吗？', function(index){
             $.post({
                 url: '/employee/task/submit',
                 data: {
                     "taskId": taskId,
-					"taskResult": taskResult
+                    "taskResult": imgFiles
                 },
                 success: function (data) {					
                     layer.msg(data)

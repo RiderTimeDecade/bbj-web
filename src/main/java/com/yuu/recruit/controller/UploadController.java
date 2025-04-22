@@ -139,4 +139,46 @@ public class UploadController {
         return result;
     }
 
+    /**
+     * 投标图片上传
+     *
+     * @param file 上传的文件
+     * @param imgNum 图片编号(1或2)
+     * @return 包含文件路径的结果
+     */
+    @PostMapping("uploadBidImage")
+    @ResponseBody
+    public Map<String, Object> uploadBidImage(MultipartFile file, String imgNum, HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (file == null || file.isEmpty()) {
+            result.put("success", false);
+            result.put("message", "上传失败，请选择文件");
+            return result;
+        }
+        
+        String fileName = file.getOriginalFilename();
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+        // 使用图片编号作为文件名前缀，避免覆盖
+        String newName = "bid_" + imgNum + "_" + UUID.randomUUID() + "." + suffix;
+        
+        OSS client = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+        try {
+            client.putObject(
+                    new PutObjectRequest(BUCKET_NAME, newName, new ByteArrayInputStream(file.getBytes())));
+            // 上传文件路径 = http://BUCKET_NAME.ENDPOINT/自定义路径/fileName
+            String filePath = "http://" + BUCKET_NAME + "." + ENDPOINT + "/" + newName;
+            result.put("success", true);
+            result.put("filePath", filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("message", "上传失败: " + e.getMessage());
+        } finally {
+            client.shutdown();
+        }
+        
+        return result;
+    }
+
 }
