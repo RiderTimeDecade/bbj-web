@@ -326,11 +326,11 @@
                                 <form action="/employee/bid" method="post">
                                     <input name="taskId" th:hidden="true" th:value="${task.id}" />
                                     <!-- Headline -->
-                                    <span class="bidding-detail">设定您的<strong>预期价格</strong></span>
+                                    <span class="bidding-detail"><strong>预期价格</strong></span>
 
                                     <!-- Price Slider -->
                                     <div class="bidding-value">￥[[${task.feesHigh}]]</div>
-                                    <input name="bidPrice" id="bidPrice" type="hidden"/>
+                                    <input name="bidPrice" id="bidPrice" type="hidden" th:value="${task.feesHigh}"/>
 
                                     <!-- Headline -->
                                     <span class="bidding-detail margin-top-30">设置您的 <strong>交货时间</strong></span>
