@@ -194,6 +194,7 @@
 
                                                 <!-- Buttons -->
                                                 <div class="buttons-to-right always-visible">
+                                                    <!-- taskResult格式是 http://aaa.com/xxx.png,http://aaa.com/xxx.png ,下载要求打包成 zip 文件，文件名是task.task_desc -->
                                                     <a th:href="@{'/task/download?taskId=' + ${task.id}}" class="button ripple-effect">
                                                         <i class="icon-material-outline-file-download"></i> 下载
                                                     </a>
@@ -250,8 +251,12 @@
             e.preventDefault();
             var taskIds = [];
             $('.dashboard-box-list li').each(function() {
-                var taskId = $(this).find('a[href*="/task/download"]').attr('href').split('=')[1];
-                taskIds.push(taskId);
+                // 获取任务ID，从下载链接中提取
+                var downloadLink = $(this).find('a[href*="/task/download"]').attr('href');
+                if (downloadLink) {
+                    var taskId = downloadLink.split('=')[1];
+                    taskIds.push(taskId);
+                }
             });
             
             if (taskIds.length > 0) {
@@ -284,7 +289,31 @@
             currentDate = $('.switch-label strong').text();
         }
         
-       
+        // 上一天按钮点击事件
+        $('#prevDay').click(function(e) {
+            e.preventDefault();
+            // 解析当前日期
+            var date = new Date(currentDate);
+            // 减去一天
+            date.setDate(date.getDate() - 1);
+            // 格式化为yyyy-MM-dd
+            var prevDay = formatDate(date);
+            // 跳转到上一天
+            window.location.href = '/employer/downloadTasks?date=' + prevDay;
+        });
+        
+        // 下一天按钮点击事件
+        $('#nextDay').click(function(e) {
+            e.preventDefault();
+            // 解析当前日期
+            var date = new Date(currentDate);
+            // 加上一天
+            date.setDate(date.getDate() + 1);
+            // 格式化为yyyy-MM-dd
+            var nextDay = formatDate(date);
+            // 跳转到下一天
+            window.location.href = '/employer/downloadTasks?date=' + nextDay;
+        });
         
         // 格式化日期为yyyy-MM-dd
         function formatDate(date) {
