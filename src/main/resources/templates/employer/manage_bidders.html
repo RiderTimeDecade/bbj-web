@@ -110,6 +110,7 @@
                                     <ul>
                                         <li class="active"><a href="/employer/myTasks">管理任务</a></li>
                                         <li><a href="/employer/task/post">发布任务</a></li>
+                                        <li><a href="/employer/downloadTasks">批量下载已完成任务</a></li>
                                     </ul>
                                 </li>
                                 <li ><a href="#"><i class="icon-material-outline-settings"></i> 个人设置</a>
@@ -180,9 +181,22 @@
                                                         <li><strong>[[${bid.deliveryDesc}]]</strong><span>完成时间</span></li>
                                                     </ul>
 
+                                                    <!-- 案例图片 -->
+                                                    <div class="bid-case-images margin-top-20">
+                                                        <h5>案例图片</h5>
+                                                        <div class="bid-images-container" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                                                            <!-- 处理逗号分隔的case_img字段 -->
+                                                            <div th:if="${bid.caseImg != null}" th:each="imgUrl : ${#strings.arraySplit(bid.caseImg, ',')}" class="case-image-item" style="max-width: 150px; margin-bottom: 10px;">
+                                                                <a th:href="${imgUrl}" class="image-popup" title="查看大图">
+                                                                    <img th:src="${imgUrl}" alt="案例图片" style="width: 100%; border-radius: 4px; border: 1px solid #eee;">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <!-- Buttons -->
                                                     <div class="buttons-to-right always-visible margin-top-25 margin-bottom-0">
-                                                        <a th:href="@{'/employer/acceptBid?taskId=' + ${task.id} + '&employeeId=' + ${bid.employee.id}}"  class="button ripple-effect"><i class="icon-material-outline-check"></i> 接受投标</a>
+                                                        <a th:href="@{'/employer/acceptBid?taskId=' + ${task.id} + '&employeeId=' + ${bid.employee.id} + '&caseImg=' + ${bid.caseImg}}"  class="button ripple-effect"><i class="icon-material-outline-check"></i> 接受投标</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -275,6 +289,26 @@
 <script src="/js/magnific-popup.min.js"></script>
 <script src="/js/slick.min.js"></script>
 <script src="/js/custom.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // 初始化图片预览
+        $('.image-popup').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom',
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

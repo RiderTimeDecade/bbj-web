@@ -378,7 +378,14 @@ public class TaskServiceImpl implements TaskService {
         task.setTaskStatus(TaskStatus.COMPLETE);
         taskMapper.updateByPrimaryKey(task);
     }
-
+    @Override
+    public List<TaskVo> getCompletedTasksByEmployerId(Long employerId) {
+        Example example = new Example(Task.class);
+        example.createCriteria().andEqualTo("employerId", employerId)
+                .andEqualTo("taskStatus", TaskStatus.COMPLETE);
+        List<Task> tasks = taskMapper.selectByExample(example);
+        return tasksToTaskVos(tasks);
+    }
     /**
      * Task 集合转换为 TaskVo 集合
      *

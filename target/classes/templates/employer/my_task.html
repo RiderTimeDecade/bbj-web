@@ -115,6 +115,7 @@
                                     <ul>
                                         <li class="active"><a href="/employer/myTasks">管理任务</a></li>
                                         <li><a href="/employer/task/post">发布任务</a></li>
+                                        <li><a href="/employer/downloadTasks">批量下载已完成任务</a></li>
                                     </ul>
                                 </li>
                                 <li ><a href="#"><i class="icon-material-outline-settings"></i> 个人设置</a>
@@ -194,8 +195,8 @@
                                         </div>
 
                                         <ul class="dashboard-task-info">
-											<li th:if="${task.taskStatus == 2 || task.taskStatus == 3}"><img width="45px" height="80px" th:src="${task.taskResult.split(';')[0]}" th:onmouseover="showImg(this)"/><a th:href="${task.taskResult.split(';')[0]}" download>点此下载</a></li>
-											<li th:if="${task.taskStatus == 2 || task.taskStatus == 3}"><img width="45px" height="80px" th:src="${task.taskResult.split(';')[1]}" th:onmouseover="showImg(this)"/><a th:href="${task.taskResult.split(';')[1]}" download>点此下载</a></li>
+											<!-- <li th:if="${task.taskStatus == 2 || task.taskStatus == 3}"><img width="45px" height="80px" th:src="${task.taskResult.split(';')[0]}" th:onmouseover="showImg(this)"/><a th:href="${task.taskResult.split(';')[0]}" download>点此下载</a></li>
+											<li th:if="${task.taskStatus == 2 || task.taskStatus == 3}"><img width="45px" height="80px" th:src="${task.taskResult.split(';')[1]}" th:onmouseover="showImg(this)"/><a th:href="${task.taskResult.split(';')[1]}" download>点此下载</a></li> -->
                                             <li th:if="${task.taskStatus != -1 && task.taskStatus != -2}"><strong>[[${task.bidVos.size()}]]</strong><span>竞标者</span></li>
                                             <li th:if="${task.taskStatus != -1 && task.taskStatus != -2}"><strong>￥[[${task.avgPrice}]]</strong><span>平均竞标价格</span></li>
                                             <li th:if="${task.taskStatus == 1 || task.taskStatus == 2 || task.taskStatus == 3}"><strong>￥[[${task.taskPrice}]]</strong><span>成交价格</span></li>

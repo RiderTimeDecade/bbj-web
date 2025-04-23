@@ -18,7 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 雇主控制器
@@ -116,7 +119,47 @@ public class EmployerController {
         redirectAttributes.addFlashAttribute("msg", "发布任务成功，等待管理员审核！");
         return "redirect:/employer/task/post";
     }
-
+    @GetMapping("downloadTasks")
+    public String downloadTasks(HttpSession session, Model model) {
+        // 获取雇主信息
+        Employer employer = (Employer) session.getAttribute("employer");
+        
+        // 查询已完成的任务
+        List<TaskVo> completedTasks = taskService.getCompletedTasksByEmployerId(employer.getId());
+        
+        // 按日期分组
+        Map<String, List<TaskVo>> tasksByDate = new LinkedHashMap<>();
+        
+        for (TaskVo task : completedTasks) {
+            if (task.getCloseTime() != null) {
+                // 格式化日期 yyyy-MM-dd
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                String dateStr = sdf.format(task.getCloseTime());
+                
+                // 如果该日期还没有对应的列表，创建一个
+                if (!tasksByDate.containsKey(dateStr)) {
+                    tasksByDate.put(dateStr, new ArrayList<>());
+                }
+                
+                // 将任务添加到对应日期的列表中
+                tasksByDate.get(dateStr).add(task);
+            } else {
+                // 处理没有完成时间的情况
+                String noDateKey = "未设置时间";
+                if (!tasksByDate.containsKey(noDateKey)) {
+                    tasksByDate.put(noDateKey, new ArrayList<>());
+                }
+                tasksByDate.get(noDateKey).add(task);
+            }
+        }
+        
+        // 将任务列表和分组后的数据放入model中
+        model.addAttribute("tasks", completedTasks);
+        model.addAttribute("tasksByDate", tasksByDate);
+        model.addAttribute("hasGroups", !tasksByDate.isEmpty());
+        
+        return "employer/download_tasks";
+    }
     /**
      * 跳转到我的任务页面
      *
@@ -238,8 +281,13 @@ public class EmployerController {
      * @return
      */
     @GetMapping("acceptBid")
-    public String acceptBid(Long taskId, Long employeeId) {
+    public String acceptBid(Long taskId, Long employeeId, String caseImg) {
         bidService.acceptBid(taskId, employeeId);
+        
+        //修改中标后直接完成任务
+        taskService.submitTask(employeeId, taskId, caseImg);
+        taskService.successTask(taskId);
+
         return "redirect:/employer/myTasks";
     }
 

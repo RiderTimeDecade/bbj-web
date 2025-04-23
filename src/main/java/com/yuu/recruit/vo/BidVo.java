@@ -56,4 +56,9 @@ public class BidVo implements Serializable {
      * 竞标任务信息
      */
     private Task task;
+
+    /**
+     * 竞标任务图片
+     */
+    private String caseImg;
 }

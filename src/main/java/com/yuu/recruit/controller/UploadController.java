@@ -163,7 +163,7 @@ public class UploadController {
         String newName = "bid_" + imgNum + "_" + UUID.randomUUID() + "." + suffix;
         
         OSS client = new OSSClientBuilder().build(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-        try {
+        try { 
             client.putObject(
                     new PutObjectRequest(BUCKET_NAME, newName, new ByteArrayInputStream(file.getBytes())));
             // 上传文件路径 = http://BUCKET_NAME.ENDPOINT/自定义路径/fileName

@@ -191,6 +191,15 @@ public interface TaskService {
      * @param taskId 任务 ID
      */
     void successTask(Long taskId);
+
+    /**
+     * 获取雇主已完成的任务
+     *
+     * @param employerId 雇主ID
+     * @return
+     */
+    List<TaskVo> getCompletedTasksByEmployerId(Long employerId);
+
 }
 
 
