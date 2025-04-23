@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 雇主控制器
@@ -120,29 +122,41 @@ public class EmployerController {
         return "redirect:/employer/task/post";
     }
     @GetMapping("downloadTasks")
-    public String downloadTasks(HttpSession session, Model model) {
+    public String downloadTasks(HttpSession session, Model model, String date) {
         // 获取雇主信息
         Employer employer = (Employer) session.getAttribute("employer");
         
         // 查询已完成的任务
         List<TaskVo> completedTasks = taskService.getCompletedTasksByEmployerId(employer.getId());
         
+        // 日期格式化工具
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        
+        // 如果没有提供日期，默认使用当天日期
+        String selectedDate = date;
+        if (selectedDate == null || selectedDate.isEmpty()) {
+            selectedDate = sdf.format(new java.util.Date());
+        }
+        
         // 按日期分组
         Map<String, List<TaskVo>> tasksByDate = new LinkedHashMap<>();
+        
+        // 所有日期列表（用于日期选择器）
+        Set<String> allDates = new TreeSet<>((d1, d2) -> d2.compareTo(d1)); // 从新到旧排序
         
         for (TaskVo task : completedTasks) {
             if (task.getCloseTime() != null) {
                 // 格式化日期 yyyy-MM-dd
-                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
                 String dateStr = sdf.format(task.getCloseTime());
+                allDates.add(dateStr);
                 
-                // 如果该日期还没有对应的列表，创建一个
-                if (!tasksByDate.containsKey(dateStr)) {
-                    tasksByDate.put(dateStr, new ArrayList<>());
+                // 如果是选定的日期或未提供日期，添加到显示列表
+                if (dateStr.equals(selectedDate)) {
+                    if (!tasksByDate.containsKey(dateStr)) {
+                        tasksByDate.put(dateStr, new ArrayList<>());
+                    }
+                    tasksByDate.get(dateStr).add(task);
                 }
-                
-                // 将任务添加到对应日期的列表中
-                tasksByDate.get(dateStr).add(task);
             } else {
                 // 处理没有完成时间的情况
                 String noDateKey = "未设置时间";
@@ -157,6 +171,8 @@ public class EmployerController {
         model.addAttribute("tasks", completedTasks);
         model.addAttribute("tasksByDate", tasksByDate);
         model.addAttribute("hasGroups", !tasksByDate.isEmpty());
+        model.addAttribute("selectedDate", selectedDate);
+        model.addAttribute("allDates", allDates);
         
         return "employer/download_tasks";
     }
