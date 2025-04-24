@@ -126,8 +126,7 @@ public class DownloadControl {
                     
                     if (task != null && task.getTaskResult() != null && !task.getTaskResult().trim().isEmpty()) {
                         // 为每个任务创建一个文件夹
-                        String folderName = "task_" + taskId + "_" + 
-                                (task.getTaskTitle() != null ? task.getTaskTitle().replaceAll("[\\\\/:*?\"<>|]", "_") : "");
+                        String folderName = (task.getTaskTitle() != null ? task.getTaskTitle().replaceAll("[\\\\/:*?\"<>|]", "_") : "");
                         
                         // 处理任务结果URL列表
                         String[] urls = task.getTaskResult().split(",|;");
