@@ -1,5 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
 
     <!-- Basic Page Needs
@@ -14,355 +15,602 @@
     <link rel="stylesheet" href="/css/colors/blue.css">
 
 </head>
+
 <body class="gray">
 
-<!-- Wrapper -->
-<div id="wrapper">
+    <!-- Wrapper -->
+    <div id="wrapper">
 
-    <!-- Header Container
+        <!-- Header Container
     ================================================== -->
-    <header id="header-container" class="fullwidth dashboard-header not-sticky">
+        <header id="header-container" class="fullwidth dashboard-header not-sticky">
 
-        <!-- Header -->
-        <div id="header">
-            <div class="container">
+            <!-- Header -->
+            <div id="header">
+                <div class="container">
 
-                <!-- Left Side Content -->
-                <div class="left-side">
+                    <!-- Left Side Content -->
+                    <div class="left-side">
 
-                    <!-- Logo -->
-                    <div id="logo">
-                        <a href="/index"><img src="/images/logo.png" alt=""></a>
+                        <!-- Logo -->
+                        <div id="logo">
+                            <a href="/index"><img src="/images/logo.png" alt=""></a>
+                        </div>
+
                     </div>
-
-                </div>
-                <!-- Left Side Content / End -->
+                    <!-- Left Side Content / End -->
 
 
-                <!-- Right Side Content / End -->
-                <div class="right-side">
+                    <!-- Right Side Content / End -->
+                    <div class="right-side">
 
-                    <!-- User Menu -->
-                    <div class="header-widget">
+                        <!-- User Menu -->
+                        <div class="header-widget">
 
-                        <!-- Messages -->
-                        <div class="header-notifications user-menu">
-                            <div class="header-notifications-trigger">
-                                <a href="#"><div class="user-avatar status-online"><img th:src="${session.employer.headImg}" alt=""></div></a>
-                            </div>
-
-                            <!-- Dropdown -->
-                            <div class="header-notifications-dropdown">
-
-                                <!-- User Status -->
-                                <div class="user-status">
-
-                                    <!-- User Name / Avatar -->
-                                    <div class="user-details">
+                            <!-- Messages -->
+                            <div class="header-notifications user-menu">
+                                <div class="header-notifications-trigger">
+                                    <a href="#">
                                         <div class="user-avatar status-online"><img th:src="${session.employer.headImg}" alt=""></div>
-                                        <div class="user-name">
-                                            [[${session.employer.username}]]<span>雇主</span>
-                                        </div>
-                                    </div>
-
+                                    </a>
                                 </div>
 
-                                <ul class="user-menu-small-nav">
-                                    <li><a href="/employer/dashboard"><i class="icon-material-outline-dashboard"></i>个人中心</a></li>
+                                <!-- Dropdown -->
+                                <div class="header-notifications-dropdown">
+
+                                    <!-- User Status -->
+                                    <div class="user-status">
+
+                                        <!-- User Name / Avatar -->
+                                        <div class="user-details">
+                                            <div class="user-avatar status-online"><img th:src="${session.employer.headImg}" alt=""></div>
+                                            <div class="user-name">
+                                                [[${session.employer.username}]]<span>雇主</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <ul class="user-menu-small-nav">
+                                        <li><a href="/employer/dashboard"><i class="icon-material-outline-dashboard"></i>个人中心</a></li>
+                                        <li><a href="/employer/logout"><i class="icon-material-outline-power-settings-new"></i> 退出登录</a></li>
+                                    </ul>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- User Menu / End -->
+                        </span>
+
+                    </div>
+                    <!-- Right Side Content / End -->
+
+                </div>
+            </div>
+            <!-- Header / End -->
+
+        </header>
+        <div class="clearfix"></div>
+        <!-- Header Container / End -->
+
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+
+            <!-- Dashboard Sidebar
+        ================================================== -->
+            <div class="dashboard-sidebar">
+                <div class="dashboard-sidebar-inner" data-simplebar>
+                    <div class="dashboard-nav-container">
+
+                        <!-- Navigation -->
+                        <div class="dashboard-nav">
+                            <div class="dashboard-nav-inner">
+
+                                <ul>
+                                    <li><a href="/employer/dashboard"><i class="icon-material-outline-dashboard"></i> 首页</a></li>
+                                    <li class="active active-submenu"><a href="#"><i class="icon-material-outline-assignment"></i> 任务</a>
+                                        <ul>
+                                            <li><a href="/employer/myTasks">管理任务</a></li>
+                                            <li class="active"><a href="/employer/task/post">发布任务</a></li>
+                                            <li><a href="/employer/downloadTasks">批量下载已完成任务</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#"><i class="icon-material-outline-settings"></i> 个人设置</a>
+                                        <ul>
+                                            <li><a href="/employer/settings/base">基本信息</a></li>
+                                            <li><a href="/employer/settings/password">修改密码</a></li>
+                                        </ul>
+                                    </li>
                                     <li><a href="/employer/logout"><i class="icon-material-outline-power-settings-new"></i> 退出登录</a></li>
                                 </ul>
 
+
                             </div>
                         </div>
+                        <!-- Navigation / End -->
 
                     </div>
-                    <!-- User Menu / End -->
-                    </span>
-
                 </div>
-                <!-- Right Side Content / End -->
-
             </div>
-        </div>
-        <!-- Header / End -->
-
-    </header>
-    <div class="clearfix"></div>
-    <!-- Header Container / End -->
+            <!-- Dashboard Sidebar / End -->
 
 
-    <!-- Dashboard Container -->
-    <div class="dashboard-container">
-
-        <!-- Dashboard Sidebar
+            <!-- Dashboard Content
         ================================================== -->
-        <div class="dashboard-sidebar">
-            <div class="dashboard-sidebar-inner" data-simplebar>
-                <div class="dashboard-nav-container">
+            <div class="dashboard-content-container" data-simplebar>
+                <div class="dashboard-content-inner">
 
-                    <!-- Navigation -->
-                    <div class="dashboard-nav">
-                        <div class="dashboard-nav-inner">
-
-                            <ul>
-                                <li><a href="/employer/dashboard"><i class="icon-material-outline-dashboard"></i> 首页</a></li>
-                                <li  class="active active-submenu"><a href="#"><i class="icon-material-outline-assignment"></i> 任务</a>
-                                    <ul>
-                                        <li><a href="/employer/myTasks">管理任务</a></li>
-                                        <li  class="active"><a href="/employer/task/post">发布任务</a></li>
-                                        <li><a href="/employer/downloadTasks">批量下载已完成任务</a></li>
-                                    </ul>
-                                </li>
-                                <li ><a href="#"><i class="icon-material-outline-settings"></i> 个人设置</a>
-                                    <ul>
-                                        <li><a href="/employer/settings/base">基本信息</a></li>
-                                        <li><a href="/employer/settings/password">修改密码</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="/employer/logout"><i class="icon-material-outline-power-settings-new"></i> 退出登录</a></li>
-                            </ul>
-
-
-                        </div>
+                    <!-- Dashboard Headline -->
+                    <div class="dashboard-headline">
+                        <h3>提交一个任务</h3>
                     </div>
-                    <!-- Navigation / End -->
 
-                </div>
-            </div>
-        </div>
-        <!-- Dashboard Sidebar / End -->
+                    <!-- Row -->
+                    <div class="row">
 
+                        <!-- Dashboard Box -->
+                        <div class="col-xl-12">
+                            <form method="post" action="/employer/task/post" onsubmit="return postTask()">
+                                <div class="dashboard-box margin-top-0">
 
-        <!-- Dashboard Content
-        ================================================== -->
-        <div class="dashboard-content-container" data-simplebar>
-            <div class="dashboard-content-inner" >
+                                    <!-- Headline -->
+                                    <div class="headline">
+                                        <h3><i class="icon-feather-folder-plus"></i> 提交任务</h3>
+                                    </div>
+                                    <div>
+                                        <h4><i class="icon-feather-folder-plus"></i> 批量发布任务</h4>
+                                        <input type="file" name="file" id="mul_tiFile" onchange="checkFile()" accept=".xls,.xlsx" />
+                                        <button type="button" class="button ripple-effect big margin-top-30" onclick="multiPostTask()"><i class="icon-feather-plus"></i> 批量提交任务</button>
+                                    </div>
+                                    <div class="content with-padding padding-bottom-10">
+                                        <div class="row">
 
-                <!-- Dashboard Headline -->
-                <div class="dashboard-headline">
-                    <h3>提交一个任务</h3>
-                </div>
-
-                <!-- Row -->
-                <div class="row">
-
-                    <!-- Dashboard Box -->
-                    <div class="col-xl-12">
-                        <form method="post" action="/employer/task/post" onsubmit="return postTask()">
-                            <div class="dashboard-box margin-top-0">
-
-                                <!-- Headline -->
-                                <div class="headline">
-                                    <h3><i class="icon-feather-folder-plus"></i> 提交任务</h3>
-                                </div>
-
-                                <div class="content with-padding padding-bottom-10">
-                                    <div class="row">
-
-                                        <div class="col-xl-6">
-                                            <div class="submit-field">
-                                                <h5>任务名称</h5>
-                                                <input name="taskTitle" type="text" class="with-border" placeholder="例如：构建一个 Java WEB 网站" required>
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>任务名称</h5>
+                                                    <input name="taskTitle" type="text" class="with-border" placeholder="例如：构建一个 Java WEB 网站" required>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-xl-6">
-                                            <div class="submit-field">
-                                                <h5>任务分类</h5>
-                                                <select name="categoryId" class="selectpicker with-border"  title="请选择任务分类" required>
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>任务分类</h5>
+                                                    <select name="categoryId" class="selectpicker with-border" title="请选择任务分类" required>
                                                     <option th:value="${category.id}" th:each="category : ${taskCategories}">[[${category.categoryName}]]</option>
                                                 </select>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-xl-12">
-                                            <div class="submit-field">
-                                                <h5>任务简介</h5>
-                                                <input name="taskProfile" type="text" class="with-border" placeholder="一句话描述您的任务" required>
+                                            <div class="col-xl-12">
+                                                <div class="submit-field">
+                                                    <h5>任务简介</h5>
+                                                    <input name="taskProfile" type="text" class="with-border" placeholder="一句话描述您的任务" required>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-xl-6">
-                                            <div class="submit-field">
-                                                <h5>您的预算是多少?</h5>
-                                                <div class="row">
-<!--                                                    <div class="col-xl-6">-->
-<!--                                                        <div class="input-with-icon">-->
-<!--                                                            <input id="feesLow" name="feesLow" class="with-border" type="number" placeholder="最低预算"  required>-->
-<!--                                                            <i class="currency">元</i>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="col-xl-6">-->
-<!--                                                        <div class="input-with-icon">-->
-<!--                                                            <input id="feesHigh" name="feesHigh" class="with-border" type="number" placeholder="最高预算" required>-->
-<!--                                                            <i class="currency">元</i>-->
-<!--                                                        </div>-->
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>您的预算是多少?</h5>
+                                                    <div class="row">
+                                                        <!--                                                    <div class="col-xl-6">-->
+                                                        <!--                                                        <div class="input-with-icon">-->
+                                                        <!--                                                            <input id="feesLow" name="feesLow" class="with-border" type="number" placeholder="最低预算"  required>-->
+                                                        <!--                                                            <i class="currency">元</i>-->
+                                                        <!--                                                        </div>-->
+                                                        <!--                                                    </div>-->
+                                                        <!--                                                    <div class="col-xl-6">-->
+                                                        <!--                                                        <div class="input-with-icon">-->
+                                                        <!--                                                            <input id="feesHigh" name="feesHigh" class="with-border" type="number" placeholder="最高预算" required>-->
+                                                        <!--                                                            <i class="currency">元</i>-->
+                                                        <!--                                                        </div>-->
 
-<!--                                                        单价可以是小数-->
+                                                        <!--                                                        单价可以是小数-->
                                                         <div class="col-xl-6">
                                                             <div class="input-with-icon">
                                                                 <input id="feesHigh" name="feesHigh" class="with-border" type="number" step="0.01" placeholder="预算" required>
                                                                 <i class="currency">元</i>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-xl-6">
-                                            <div class="submit-field">
-                                                <h5>该任务需要什么技能? <i class="help-icon" data-tippy-placement="right" title="上传技能标签去描述您的任务"></i></h5>
-                                                <div class="keywords-container">
-                                                    <div class="keyword-input-container">
-                                                        <input type="text" class="keyword-input with-border" placeholder="添加技能"/>
-                                                        <button type="button" class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>该任务需要什么技能? <i class="help-icon" data-tippy-placement="right" title="上传技能标签去描述您的任务"></i></h5>
+                                                    <div class="keywords-container">
+                                                        <div class="keyword-input-container">
+                                                            <input type="text" class="keyword-input with-border" placeholder="添加技能" />
+                                                            <button type="button" class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                                                        </div>
+                                                        <div class="keywords-list">
+                                                            <!-- keywords go here -->
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <input type="hidden" name="skills" id="skills" />
                                                     </div>
-                                                    <div class="keywords-list"><!-- keywords go here --></div>
-                                                    <div class="clearfix"></div>
-                                                    <input type="hidden" name="skills" id="skills"/>
-                                                </div>
 
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-12">
-                                            <div class="submit-field">
-                                                <h5>任务描述</h5>
-                                                <textarea name="taskDesc" cols="30" rows="5" class="with-border" required></textarea>
-                                                <div class="uploadButton margin-top-30">
-                                                    <input onchange="updateFile()" class="uploadButton-input" type="file" accept="image/*, application/pdf" name="upload" id="upload" multiple/>
-                                                    <label class="uploadButton-button ripple-effect" for="upload">上传附件</label>
-                                                    <span class="uploadButton-file-name">只允许上传图片和PDF格式的文件</span>
-                                                    <input id="feesFile" th:hidden="true" name="feesFile" />
                                                 </div>
                                             </div>
-                                        </div>
 
+                                            <div class="col-xl-12">
+                                                <div class="submit-field">
+                                                    <h5>任务描述</h5>
+                                                    <textarea name="taskDesc" cols="30" rows="5" class="with-border" required></textarea>
+                                                    <div class="uploadButton margin-top-30">
+                                                        <input onchange="updateFile()" class="uploadButton-input" type="file" accept="image/*, application/pdf" name="upload" id="upload" multiple/>
+                                                        <label class="uploadButton-button ripple-effect" for="upload">上传附件</label>
+                                                        <span class="uploadButton-file-name">只允许上传图片和PDF格式的文件</span>
+                                                        <input id="feesFile" th:hidden="true" name="feesFile" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-12">
-                                <button type="submit" class="button ripple-effect big margin-top-30"><i class="icon-feather-plus"></i> 提交任务</button>
-                            </div>
-                        </form>
+                                <div class="col-xl-12">
+                                    <button type="submit" class="button ripple-effect big margin-top-30"><i class="icon-feather-plus"></i> 提交任务</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <!-- Row / End -->
+                    <!-- Row / End -->
 
-                                <!-- Footer -->
-                <div class="dashboard-footer-spacer"></div>
-                <div class="small-footer margin-top-15">
-                    <div class="small-footer-copyrights">
-                       © 2025 <strong>江西思佰尔科技有限公司</strong>. All Rights Reserved.
+                    <!-- Footer -->
+                    <div class="dashboard-footer-spacer"></div>
+                    <div class="small-footer margin-top-15">
+                        <div class="small-footer-copyrights">
+                            © 2025 <strong>江西思佰尔科技有限公司</strong>. All Rights Reserved.
+                        </div>
                     </div>
-                </div>
-                <!-- Footer / End -->
+                    <!-- Footer / End -->
 
+                </div>
             </div>
+            <!-- Dashboard Content / End -->
+
         </div>
-        <!-- Dashboard Content / End -->
+        <!-- Dashboard Container / End -->
 
     </div>
-    <!-- Dashboard Container / End -->
-
-</div>
-<!-- Wrapper / End -->
+    <!-- Wrapper / End -->
 
 
-<!-- Scripts
+    <!-- Scripts
 ================================================== -->
-<script src="/js/jquery-3.3.1.min.js"></script>
-<script src="/js/jquery-migrate-3.0.0.min.js"></script>
-<script src="/js/mmenu.min.js"></script>
-<script src="/js/tippy.all.min.js"></script>
-<script src="/js/simplebar.min.js"></script>
-<script src="/js/bootstrap-slider.min.js"></script>
-<script src="/js/bootstrap-select.min.js"></script>
-<script src="/js/snackbar.js"></script>
-<script src="/js/clipboard.min.js"></script>
-<script src="/js/counterup.min.js"></script>
-<script src="/js/magnific-popup.min.js"></script>
-<script src="/js/slick.min.js"></script>
-<script src="/js/custom.js"></script>
-<script src="/plugins/layer/layer.js"></script>
-<script src="/js/ajaxfileupload.js"></script>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery-migrate-3.0.0.min.js"></script>
+    <script src="/js/mmenu.min.js"></script>
+    <script src="/js/tippy.all.min.js"></script>
+    <script src="/js/simplebar.min.js"></script>
+    <script src="/js/bootstrap-slider.min.js"></script>
+    <script src="/js/bootstrap-select.min.js"></script>
+    <script src="/js/snackbar.js"></script>
+    <script src="/js/clipboard.min.js"></script>
+    <script src="/js/counterup.min.js"></script>
+    <script src="/js/magnific-popup.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/custom.js"></script>
+    <script src="/plugins/layer/layer.js"></script>
+    <script src="/js/ajaxfileupload.js"></script>
 
-<!-- 自定义 Script -->
-<script>
-
-    // 获取发布任务返回的消息
-    $(function () {
-        var msg = "[[${msg}]]"
-        console.log(msg)
-        if (msg != "") {
-            layer.msg(msg)
-        }
-    })
-
-    /**
-     * 提交任务
-     */
-    function postTask() {
-        // var feesLow = Number($("#feesLow").val());
-        // var feesHigh = Number($("#feesHigh").val());
-        var price = Number($("#feesHigh").val());
-        if (price < 0) {
-            layer.msg('请输入正确的价格')
-            return false
-        }
-
-        var skill = $(".keyword-text")
-        console.log(skill.length)
-        console.log(skill[1].innerText)
-        var skillsStr = "";
-        for (let i = 0; i < skill.length; i++) {
-            if (i == skill.length - 1) {
-                skillsStr += skill[i].innerText
-            } else {
-                skillsStr += skill[i].innerText + ","
+    <!-- 自定义 Script -->
+    <script>
+        // 获取发布任务返回的消息
+        $(function() {
+            var msg = "[[${msg}]]"
+            console.log(msg)
+            if (msg != "") {
+                layer.msg(msg)
             }
-        }
-        $("#skills").val(skillsStr)
+        })
 
-        return true
-    }
-
-    /**
-     * 删除任务技能标签
-     */
-    $(".keyword-remove").click(function () {
-        var skill = $(".keyword-text")
-        console.log(skill.length)
-        console.log(skill[1].innerText)
-        var skillsStr = "";
-        for (let i = 0; i < skill.length; i++) {
-            if (i == skill.length - 1) {
-                skillsStr += skill[i].innerText
-            } else {
-                skillsStr += skill[i].innerText + ","
+        /**
+         * 提交任务
+         */
+        function postTask() {
+            // var feesLow = Number($("#feesLow").val());
+            // var feesHigh = Number($("#feesHigh").val());
+            var price = Number($("#feesHigh").val());
+            if (price < 0) {
+                layer.msg('请输入正确的价格')
+                return false
             }
-        }
-        $("#skills").val(skillsStr)
-    })
 
-
-    // 上传附件
-    function updateFile() {
-        $.ajaxFileUpload({
-            url:'/uploadFile',//用于文件上传的服务器端请求地址
-            secureuri:false ,//一般设置为false
-            fileElementId:'upload',//文件上传控件的id属性  <input type="file" id="upload" name="upload" />
-            dataType: 'text',//返回值类型 一般设置为json
-            success: function (responseText)  //服务器成功响应处理函数
-            {
-                var obj = $.parseJSON(responseText.toString().replace(/<.*?>/ig,""));
-                $("#feesFile").val(obj.filePath)
-                layer.alert("附件上传成功！")
+            var skill = $(".keyword-text")
+            console.log(skill.length)
+            console.log(skill[1].innerText)
+            var skillsStr = "";
+            for (let i = 0; i < skill.length; i++) {
+                if (i == skill.length - 1) {
+                    skillsStr += skill[i].innerText
+                } else {
+                    skillsStr += skill[i].innerText + ","
+                }
             }
-        });
-    }
-</script>
+            $("#skills").val(skillsStr)
+
+            return true
+        }
+
+        //检查上传文件是否是excel 文件
+        function checkFile() {
+            var file = $("#mul_tiFile").val();
+            if (file == null || file == "") {
+                layer.msg("请选择Excel文件", {
+                    icon: 2
+                });
+                return false;
+            }
+
+            // 获取文件扩展名
+            var ext = file.substring(file.lastIndexOf(".")).toLowerCase();
+            if (ext != ".xls" && ext != ".xlsx") {
+                layer.msg("请选择Excel文件(.xls或.xlsx)", {
+                    icon: 2
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        // 批量提交任务
+        function multiPostTask() {
+            // 检查文件是否符合要求
+            if (!checkFile()) {
+                return false;
+            }
+
+            // 显示加载提示
+            var loadingIndex = layer.load(1, {
+                shade: [0.3, '#fff'],
+                content: '正在解析Excel文件，请稍候...'
+            });
+
+            // 创建FormData对象用于文件上传
+            var formData = new FormData();
+            formData.append('file', $('#mul_tiFile')[0].files[0]);
+
+            // 发送到服务器进行处理
+            $.ajax({
+                url: '/employer/task/read_excel',
+                type: 'POST',
+                data: formData,
+                processData: false, // 告诉jQuery不要处理数据
+                contentType: false, // 告诉jQuery不要设置contentType
+                success: function(response) {
+                    layer.close(loadingIndex);
+
+                    if (response.code == 0) {
+                        // 解析成功
+                        var data = response.data;
+                        if (data && data.length > 0) {
+                            // 显示解析后的数据
+                            showExcelData(data);
+                        } else {
+                            layer.msg('Excel文件中没有数据', {
+                                icon: 2
+                            });
+                        }
+                    } else {
+                        layer.msg('Excel解析失败：' + response.msg, {
+                            icon: 2
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    layer.close(loadingIndex);
+                    layer.msg('Excel文件上传失败，请稍后重试', {
+                        icon: 2
+                    });
+                    console.error('上传错误:', error);
+                }
+            });
+
+            return false;
+        }
+
+        // 显示Excel解析后的数据
+        function showExcelData(data) {
+            // 生成表格HTML
+            var tableHtml = '<table class="basic-table"><thead><tr>';
+
+            // 获取表头（第一行的键）
+            var headers = Object.keys(data[0]);
+            headers.forEach(function(header) {
+                tableHtml += '<th>' + header + '</th>';
+            });
+            tableHtml += '</tr></thead><tbody>';
+
+            // 生成数据行
+            data.forEach(function(row) {
+                tableHtml += '<tr>';
+                headers.forEach(function(header) {
+                    tableHtml += '<td>' + (row[header] || '') + '</td>';
+                });
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</tbody></table>';
+
+            // 显示数据预览并提供批量提交选项
+            layer.open({
+                type: 1,
+                title: 'Excel解析结果（共' + data.length + '条记录）',
+                area: ['90%', '80%'],
+                content: '<div style="padding: 20px;">' + tableHtml + '</div>',
+                btn: ['批量提交任务', '取消'],
+                yes: function(index) {
+                    submitBatchTasks(data);
+                    layer.close(index);
+                }
+            });
+        }
+
+        // 批量提交任务
+        function submitBatchTasks(tasksData) {
+            var successCount = 0;
+            var failCount = 0;
+            var total = tasksData.length;
+            var loadingIndex = layer.load(1, {
+                shade: [0.3, '#fff'],
+                content: '正在批量提交任务...'
+            });
+
+            // 获取技能标签
+            var skill = $(".keyword-text");
+            var skillsStr = "";
+            for (let i = 0; i < skill.length; i++) {
+                if (i == skill.length - 1) {
+                    skillsStr += skill[i].innerText;
+                } else {
+                    skillsStr += skill[i].innerText + ",";
+                }
+            }
+
+            // 从表单获取字段值
+            var categoryId = $("select[name='categoryId']").val();
+            var taskProfile = $("input[name='taskProfile']").val();
+            var feesHigh = $("input[name='feesHigh']").val();
+            var skills = skillsStr; // 使用上面处理过的技能标签
+            var taskDesc = $("textarea[name='taskDesc']").val();
+            var feesFile = $("#feesFile").val();
+
+            // 检查表单是否完整
+            if (!categoryId || !taskProfile || !feesHigh || !taskDesc) {
+                layer.close(loadingIndex);
+                layer.msg('请先完成表单填写', {
+                    icon: 2
+                });
+                return;
+            }
+
+            // 处理每一行Excel数据
+            var processTask = function(index) {
+                if (index >= total) {
+                    // 处理完成，显示结果
+                    layer.close(loadingIndex);
+                    layer.alert('批量提交完成：成功' + successCount + '个，失败' + failCount + '个', {
+                        icon: 1,
+                        closeBtn: 0
+                    }, function(alertIndex) {
+                        layer.close(alertIndex);
+                        if (successCount > 0) {
+                            // 成功后跳转到任务管理页面
+                            window.location.href = '/employer/myTasks';
+                        }
+                    });
+                    return;
+                }
+
+                var task = tasksData[index];
+
+                // 检查query字段是否存在且不为空
+                if (!task['query']) {
+                    failCount++;
+                    console.error('任务标题为空，跳过');
+                    processTask(index + 1);
+                    return;
+                }
+
+                // 构建任务数据对象
+                var taskData = {
+                    taskTitle: task['query'],
+                    categoryId: categoryId,
+                    taskProfile: taskProfile,
+                    feesHigh: feesHigh,
+                    skills: skills,
+                    taskDesc: taskDesc,
+                    feesFile: feesFile
+                };
+
+                console.log('提交任务数据:', taskData);
+
+                // 发送AJAX请求提交任务
+                $.ajax({
+                    url: '/employer/task/post',
+                    type: 'POST',
+                    data: taskData,
+                    success: function(response) {
+                        // 假设response是JSON对象
+                        if (typeof response === 'string') {
+                            try {
+                                response = JSON.parse(response);
+                            } catch (e) {
+                                // 非JSON格式
+                                if (response.indexOf('成功') > -1) {
+                                    successCount++;
+                                } else {
+                                    failCount++;
+                                    console.error('任务提交失败:', response);
+                                }
+                                processTask(index + 1);
+                                return;
+                            }
+                        }
+
+                        if (response.code == 0) {
+                            successCount++;
+                        } else {
+                            failCount++;
+                            console.error('任务提交失败:', response.msg);
+                        }
+                        // 处理下一个任务
+                        processTask(index + 1);
+                    },
+                    error: function(xhr, status, error) {
+                        failCount++;
+                        console.error('请求错误:', status, error);
+                        // 处理下一个任务
+                        processTask(index + 1);
+                    }
+                });
+            };
+
+            // 开始处理第一个任务
+            processTask(0);
+        }
+
+        /**
+         * 删除任务技能标签
+         */
+        $(".keyword-remove").click(function() {
+            var skill = $(".keyword-text")
+            console.log(skill.length)
+            console.log(skill[1].innerText)
+            var skillsStr = "";
+            for (let i = 0; i < skill.length; i++) {
+                if (i == skill.length - 1) {
+                    skillsStr += skill[i].innerText
+                } else {
+                    skillsStr += skill[i].innerText + ","
+                }
+            }
+            $("#skills").val(skillsStr)
+        })
+
+
+        // 上传附件
+        function updateFile() {
+            $.ajaxFileUpload({
+                url: '/uploadFile', //用于文件上传的服务器端请求地址
+                secureuri: false, //一般设置为false
+                fileElementId: 'upload', //文件上传控件的id属性  <input type="file" id="upload" name="upload" />
+                dataType: 'text', //返回值类型 一般设置为json
+                success: function(responseText) //服务器成功响应处理函数
+                    {
+                        var obj = $.parseJSON(responseText.toString().replace(/<.*?>/ig, ""));
+                        $("#feesFile").val(obj.filePath)
+                        layer.alert("附件上传成功！")
+                    }
+            });
+        }
+    </script>
 
 </body>
-</html>
+
 </html>
