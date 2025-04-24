@@ -333,6 +333,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public void multiPostTask(List<Task> tasks, String skills, String upload) {
+        for (Task task : tasks) {
+            postTask(task, skills, upload);
+        }
+    }
+
+    @Override
     public List<TaskVo> getUnCheckAll() {
         Example example = new Example(Task.class);
         example.createCriteria().andEqualTo("taskStatus", TaskStatus.UNCHECK);

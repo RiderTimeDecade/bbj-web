@@ -151,6 +151,13 @@ public interface TaskService {
     void postTask(Task task, String skills, String upload);
 
     /**
+     * 雇主批量发布任务
+     *
+     * @param task
+     */
+    void multiPostTask(List<Task> tasks, String skills, String upload);
+
+    /**
      * 查询所有待审核任务
      *
      * @return
