@@ -5,13 +5,18 @@ import com.yuu.recruit.result.PageResult;
 import com.yuu.recruit.service.EmployeeBookmarkedService;
 import com.yuu.recruit.service.TaskCategoryService;
 import com.yuu.recruit.service.TaskService;
+import com.yuu.recruit.service.BidService;
 import com.yuu.recruit.vo.TaskCategoryVo;
 import com.yuu.recruit.vo.TaskVo;
+import com.yuu.recruit.domain.Bid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -39,6 +44,9 @@ public class TaskController {
     @Resource
     private EmployeeBookmarkedService employeeBookmarkedService;
 
+    @Resource
+    private BidService bidService;
+
     /**
      * 跳转到分类列表页
      *
@@ -56,11 +64,15 @@ public class TaskController {
         // 如果雇员登录了，查询出雇员收藏信息
         Employee employee = (Employee) session.getAttribute("employee");
         List<Long> bookMarkedIds = new ArrayList<>();
+        List<Long> bidIds = new ArrayList<>();
+
         if (employee != null) {
             // 查询雇员收藏信息
             Long employeeId = employee.getId();
             // 查询雇员收藏任务ID集合
             bookMarkedIds = employeeBookmarkedService.getIdsByEmployeeId(employeeId);
+            // 查询雇员投标任务ID集合
+            bidIds = bidService.getIdsByEmployeeId(employeeId);
         }
 
         // 查询出所有分类信息，因为选择分类的时候，需要分类信息
@@ -77,7 +89,8 @@ public class TaskController {
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("key", key);
         model.addAttribute("bookMarkedIds", bookMarkedIds);
-
+        model.addAttribute("bidIds", bidIds);
+        
         return "task_list";
     }
 

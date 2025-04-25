@@ -49,6 +49,14 @@ public interface BidService {
      * @param employeeId 雇员 ID
      */
     void acceptBid(Long taskId, Long employeeId);
+
+    /**
+     * 获取雇员投标任务ID集合
+     *
+     * @param employeeId 雇员 ID
+     * @return
+     */
+    List<Long> getIdsByEmployeeId(Long employeeId);
 }
 
 

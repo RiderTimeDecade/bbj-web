@@ -56,6 +56,17 @@ public class BidServiceImpl implements BidService {
 
         return false;
     }
+    @Override
+    public List<Long> getIdsByEmployeeId(Long employeeId) {
+        Example example = new Example(Bid.class);
+        example.createCriteria().andEqualTo("employeeId", employeeId);
+        List<Bid> bids = bidMapper.selectByExample(example);
+        List<Long> bidIds = new ArrayList<>();
+        for (Bid bid : bids) {
+            bidIds.add(bid.getTaskId());
+        }
+        return bidIds;
+    }
 
     @Override
     public List<BidVo> getNoBitByEmployeeId(Long id) {
