@@ -636,6 +636,12 @@
             var skills = skillsStr; // 使用上面处理过的技能标签
             var taskDesc = $("#batchTaskDesc").val();
             var feesFile = $("#mulFeesFile").val();
+            var filename = '';
+            if ($("#batchUpload")[0].files.length > 0) {
+                filename = $("#batchUpload")[0].files[0].name;
+            }
+
+
             console.log(feesFile)
                 // 检查表单是否完整
             if (!categoryId || !taskProfile || !feesHigh || !taskDesc) {
@@ -676,46 +682,57 @@
                 }
 
                 // 构建任务数据对象
-                var taskData = {
-                    taskTitle: task['query'],
-                    categoryId: categoryId,
-                    taskProfile: taskProfile,
-                    feesHigh: feesHigh,
-                    skills: skills,
-                    taskDesc: taskDesc,
-                    feesFile: feesFile
-                };
-                console.log(feesFile)
-                console.log('提交任务数据:', taskData);
+                var formData = new FormData();
+                formData.append('taskTitle', task['query']);
+                formData.append('categoryId', categoryId);
+                formData.append('taskProfile', taskProfile);
+                formData.append('feesHigh', feesHigh);
+                formData.append('taskDesc', taskDesc);
+                formData.append('skills', skills);
+                formData.append('feesFile', feesFile);
+                formData.append('upload', filename);
+
+                console.log('发送任务数据:', {
+                    'taskTitle': task['query'],
+                    'categoryId': categoryId,
+                    'taskProfile': taskProfile,
+                    'feesHigh': feesHigh,
+                    'skills': skills,
+                    'taskDesc': taskDesc,
+                    'upload': feesFile,
+                    'feesFile': feesFile,
+                    'upload': filename
+                });
 
                 // 发送AJAX请求提交任务
                 $.ajax({
                     url: '/employer/task/post',
                     type: 'POST',
-                    data: taskData,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
-                        // 假设response是JSON对象
+                        // 判断响应类型
                         if (typeof response === 'string') {
-                            try {
-                                response = JSON.parse(response);
-                            } catch (e) {
-                                // 非JSON格式
-                                if (response.indexOf('成功') > -1) {
-                                    successCount++;
-                                } else {
-                                    failCount++;
-                                    console.error('任务提交失败:', response);
-                                }
-                                processTask(index + 1);
-                                return;
+                            // HTML响应通常包含成功或失败的提示信息
+                            if (response.indexOf('成功') > -1) {
+                                successCount++;
+                            } else {
+                                failCount++;
+                                console.error('任务提交失败: 可能需要登录或其他问题');
                             }
-                        }
-
-                        if (response.code == 0) {
-                            successCount++;
+                        } else if (response && response.code !== undefined) {
+                            // JSON响应
+                            if (response.code == 0) {
+                                successCount++;
+                            } else {
+                                failCount++;
+                                console.error('任务提交失败:', response.msg || '未知错误');
+                            }
                         } else {
+                            // 未知响应格式
                             failCount++;
-                            console.error('任务提交失败:', response.msg);
+                            console.error('任务提交失败: 未知响应格式');
                         }
                         // 处理下一个任务
                         processTask(index + 1);
