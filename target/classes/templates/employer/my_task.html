@@ -169,7 +169,9 @@
                                         <!-- 审核失败任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 审核失败的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 审核失败的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == -2])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == -2}">
@@ -207,7 +209,9 @@
                                         <!-- 等待审核中任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待审核中的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待审核中的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == -1])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == -1}">
@@ -245,7 +249,9 @@
                                         <!-- 未中标任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 未中标的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 未中标的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == 0])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == 0}">
@@ -292,7 +298,9 @@
                                         <!-- 雇员进行中任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待雇员完成的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待雇员完成的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == 1])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == 1}">
@@ -331,7 +339,9 @@
                                         <!-- 等待确认完成任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待确认完成的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 等待确认完成的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == 2])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == 2}">
@@ -371,7 +381,9 @@
                                         <!-- 已完成任务 -->
                                         <div class="task-group">
                                             <div class="task-group-header">
-                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 已完成的任务</h4>
+                                                <h4><i class="icon-material-outline-keyboard-arrow-down"></i> 已完成的任务
+                                                    <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == 3])}">0</span>
+                                                </h4>
                                             </div>
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == 3}">
@@ -625,6 +637,16 @@
             .buttons-to-right a {
                 margin: 5px 10px 5px 0;
             }
+        }
+        
+        .task-count {
+            margin-left: 10px;
+            background-color: #ebebeb;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 2px 8px;
+            color: #666;
         }
     </style>
 
