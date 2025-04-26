@@ -109,113 +109,95 @@
             </div>
             <!-- Dashboard Sidebar / End -->
 
-            <!-- Dashboard Content
-        ================================================== -->
+            <!-- Dashboard Content -->
             <div class="dashboard-content-container" data-simplebar>
                 <div class="dashboard-content-inner">
                     <!-- Dashboard Headline -->
                     <div class="dashboard-headline">
-                        <h3>批量下载已完成任务</h3>
-                        <div class="dashboard-headline-buttons">
-                            <!-- 日期选择器 -->
-                            <div class="margin-right-20" style="display: inline-block;">
-                                <select class="selectpicker with-border" id="dateSelector" data-live-search="true" title="选择日期" style="min-width: 180px; height: 48px;">
-                                    <option value="" th:text="'今天'" th:selected="${selectedDate == #dates.format(new java.util.Date(), 'yyyy-MM-dd')}"></option>
-                                    <option th:each="date,stat : ${allDates}" 
-                                            th:if="${stat.index < 5}"
-                                            th:value="${date}" 
-                                            th:text="${date}"
-                                            th:selected="${date == selectedDate}"></option>
-                                </select>
-                                <a href="#" class="button ripple-effect" id="batchDownload" style="min-width: 180px; height: 48px;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <h3 class="margin-bottom-0">批量下载已完成任务</h3>
+                            <div class="dashboard-headline-buttons d-flex align-items-center flex-wrap">
+                                <div class="date-selector-wrapper margin-right-10">
+                                    <select class="selectpicker with-border" id="dateSelector" data-live-search="true" title="选择日期" data-size="5">
+                                        <option value="" th:text="'今天'" th:selected="${selectedDate == #dates.format(new java.util.Date(), 'yyyy-MM-dd')}"></option>
+                                        <option th:each="date : ${allDates}" 
+                                                th:value="${date}" 
+                                                th:text="${date}"
+                                                th:selected="${date == selectedDate}"></option>
+                                    </select>
+                                </div>
+                                <a href="#" class="button ripple-effect" id="batchDownload">
                                     <i class="icon-material-outline-file-download"></i> 批量下载
                                 </a>
                             </div>
-
                         </div>
                     </div>
 
-                    <div class="separation-line" style="width: 100%; height: 1px; background-color: #e4e4e4; margin: 15px 0 25px;"></div>
+                    <div class="separation-line margin-bottom-30"></div>
 
+                    <!-- Tasks List Container -->
+                    <div class="tasks-list-container">
+                        <div class="notification notice info-box margin-bottom-30" th:if="${#lists.isEmpty(tasks)}">
+                            <p><i class="icon-material-outline-info"></i> 暂无已完成的任务</p>
+                        </div>
 
+                        <div class="notification notice info-box margin-bottom-30" th:if="${!#lists.isEmpty(tasks) && #lists.isEmpty(tasksByDate)}">
+                            <p><i class="icon-material-outline-event-note"></i> <span th:text="${selectedDate + ' 没有已完成的任务'}">该日期没有已完成的任务</span></p>
+                            <p>您可以通过日期选择器查看其他日期的已完成任务</p>
+                        </div>
 
-                    <!-- Row -->
-                    <div class="row">
-                        <!-- Dashboard Box -->
-                        <div class="col-xl-12">
-                            <div class="dashboard-box margin-top-0">
-                                <!-- Headline -->
-                                <div class="headline">
-                                    <h3><i class="icon-material-outline-assignment"></i> 已完成任务列表</h3>
+                        <!-- Tasks by Date -->
+                        <div th:unless="${#lists.isEmpty(tasksByDate)}" th:if="${hasGroups}" class="tasks-by-date">
+                            <div th:each="dateEntry : ${tasksByDate}" class="date-group margin-bottom-35">
+                                <div class="date-header">
+                                    <h4 th:text="${dateEntry.key}" class="margin-bottom-20"></h4>
                                 </div>
 
-                                <div class="content">
-                                    <div class="notification notice info-box" th:if="${#lists.isEmpty(tasks)}">
-                                        <p><i class="icon-material-outline-info"></i> 暂无已完成的任务</p>
-                                    </div>
-                                    <div class="notification notice info-box" th:if="${!#lists.isEmpty(tasks) && #lists.isEmpty(tasksByDate)}">
-                                        <p><i class="icon-material-outline-event-note"></i> <span th:text="${selectedDate + ' 没有已完成的任务'}">该日期没有已完成的任务</span></p>
-                                        <p>您可以通过日期选择器查看其他日期的已完成任务</p>
-                                    </div>
-                                    <div th:unless="${#lists.isEmpty(tasksByDate)}" th:if="${hasGroups}">
-                                        <!-- 按天分组显示任务 -->
-                                        <div th:each="dateEntry : ${tasksByDate}" class="margin-bottom-25">
-                                            <div class="dashboard-box-list-header" style="background-color: #f7f7f7; padding: 15px 20px; border-radius: 4px; border-left: 3px solid #2a41e8; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                                                <h3 th:text="${dateEntry.key}" style="margin: 0; font-weight: 600; color: #333;"></h3>
+                                <div class="tasks-list">
+                                    <!-- 简单直接的方式显示任务，不尝试在前端做复杂分组 -->
+                                    <div th:each="task : ${dateEntry.value}" class="task-card">
+                                        <div class="task-card-header d-flex justify-content-between align-items-center">
+                                            <h3 class="task-title">
+                                                <a th:href="@{'/task/page?taskId=' + ${task.id}}" th:text="${task.taskTitle}"></a>
+                                                <span class="status-badge completed">已完成</span>
+                                            </h3>
+                                            <div class="task-time">
+                                                <i class="icon-material-outline-access-time"></i>
+                                                <span th:if="${task.closeTime != null}" th:text="${#dates.format(task.closeTime, 'yyyy-MM-dd HH:mm')}"></span>
+                                                <span th:unless="${task.closeTime != null}">未设置</span>
                                             </div>
-                                            <ul class="dashboard-box-list">
-                                                <li th:each="task : ${dateEntry.value}" style="transition: all 0.3s;">
-                                                    <!-- Job Listing -->
-                                                    <div class="job-listing width-adjustment">
-                                                        <!-- Job Listing Details -->
-                                                        <div class="job-listing-details">
-                                                            <!-- Details -->
-                                                            <div class="job-listing-description">
-                                                                <h3 class="job-listing-title">
-                                                                    <a th:href="@{'/task/page?taskId=' + ${task.id}}" th:text="${task.taskTitle}" style="color: #333; transition: color 0.3s;">任务标题</a>
-                                                                    <span class="dashboard-status-button green">已完成</span>
-                                                                </h3>
-                                                                <!-- Job Listing Footer -->
-                                                                <div class="job-listing-footer">
-                                                                    <ul>
-                                                                        <li><i class="icon-material-outline-access-time"></i> 完成时间:
-                                                                            <span th:if="${task.closeTime != null}">
-                                                                            <span th:text="${#dates.format(task.closeTime, 'HH:mm')}"></span>
-                                                                            </span>
-                                                                            <span th:unless="${task.closeTime != null}">未设置</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                        </div>
 
-                                                    <!-- Task Info -->
-                                                    <ul class="dashboard-task-info">
-                                                        <li><strong>[[${task.employer.username}]]</strong><span> 雇主</span></li>
-                                                        <li><strong>[[${task.employee.username}]]</strong><span>完成人</span></li>
-                                                        <li><strong>￥[[${task.taskPrice}]]</strong><span>成交价格</span></li>
-                                                    </ul>
+                                        <div class="task-card-body">
+                                            <div class="task-info-grid">
+                                                <div class="info-item">
+                                                    <label>雇主</label>
+                                                    <strong th:text="${task.employer.username}"></strong>
+                                                </div>
+                                                <div class="info-item">
+                                                    <label>完成人</label>
+                                                    <strong th:text="${task.employee.username}"></strong>
+                                                </div>
+                                                <div class="info-item">
+                                                    <label>成交价格</label>
+                                                    <strong class="price">￥<span th:text="${task.taskPrice}"></span></strong>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                                    <!-- Buttons -->
-                                                    <div class="buttons-to-right always-visible">
-                                                        <!-- taskResult格式是 http://aaa.com/xxx.png,http://aaa.com/xxx.png ,下载要求打包成 zip 文件，文件名是task.task_desc -->
-                                                        <a th:href="@{'/task/download?taskId=' + ${task.id}}" class="button ripple-effect">
-                                                            <i class="icon-material-outline-file-download"></i> 下载
-                                                        </a>
-                                                        <a target="_blank" th:href="@{'/employee/profile?employeeId=' + ${task.employee.id}}" class="button ripple-effect">
-                                                            <i class="icon-material-outline-account-circle"></i> 浏览雇员信息
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
+                                        <div class="task-card-footer">
+                                            <a th:href="@{'/task/download?taskId=' + ${task.id}}" class="button ripple-effect">
+                                                <i class="icon-material-outline-file-download"></i> 下载
+                                            </a>
+                                            <a target="_blank" th:href="@{'/employee/profile?employeeId=' + ${task.employee.id}}" class="button ripple-effect-dark">
+                                                <i class="icon-material-outline-account-circle"></i> 查看雇员
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Row / End -->
 
                     <!-- Footer -->
                     <div class="dashboard-footer-spacer"></div>
@@ -224,7 +206,6 @@
                             © 2025 <strong>江西思佰尔科技有限公司</strong>. All Rights Reserved.
                         </div>
                     </div>
-                    <!-- Footer / End -->
                 </div>
             </div>
             <!-- Dashboard Content / End -->
@@ -255,7 +236,7 @@
             $('#batchDownload').click(function(e) {
                 e.preventDefault();
                 var taskIds = [];
-                $('.dashboard-box-list li').each(function() {
+                $('.task-card').each(function() {
                     // 获取任务ID，从下载链接中提取
                     var downloadLink = $(this).find('a[href*="/task/download"]').attr('href');
                     if (downloadLink) {
@@ -288,13 +269,19 @@
                 window.location.href = '/employer/downloadTasks?date=' + selectedDate;
             });
 
+            // 增强选择器配置
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                liveSearchPlaceholder: '搜索日期...',
+                size: 5,
+                noneResultsText: '没有找到匹配的日期'
+            });
+
             // 获取当前选定的日期
             var currentDate = $('#dateSelector').val();
             if (!currentDate) {
                 currentDate = $('.switch-label strong').text();
             }
-
-
 
             // 格式化日期为yyyy-MM-dd
             function formatDate(date) {
@@ -303,8 +290,306 @@
                 var day = date.getDate().toString().padStart(2, '0');
                 return year + '-' + month + '-' + day;
             }
+
+            // 按完成人分组任务并统计
+            groupTasksByEmployee();
+
+            function groupTasksByEmployee() {
+                // 获取每个日期区块
+                $('.date-group').each(function() {
+                    var dateGroup = $(this);
+                    var dateHeader = dateGroup.find('.date-header h4').text();
+                    var tasksList = dateGroup.find('.tasks-list');
+                    var taskCards = tasksList.find('.task-card');
+
+                    // 如果没有任务卡片，直接返回
+                    if (taskCards.length === 0) return;
+
+                    // 按完成人分组的容器
+                    var employeeGroups = {};
+                    var employeeOrder = [];
+
+                    // 收集分组数据
+                    taskCards.each(function() {
+                        var card = $(this);
+                        var employeeName = card.find('.info-item:nth-child(2) strong').text();
+                        var taskPrice = parseFloat(card.find('.info-item:nth-child(3) strong span').text());
+
+                        if (!employeeGroups[employeeName]) {
+                            employeeGroups[employeeName] = {
+                                cards: [],
+                                totalAmount: 0
+                            };
+                            employeeOrder.push(employeeName);
+                        }
+
+                        employeeGroups[employeeName].cards.push(card);
+                        employeeGroups[employeeName].totalAmount += taskPrice;
+                    });
+
+                    // 清空原任务列表
+                    tasksList.empty();
+
+                    // 按完成人重新生成任务分组
+                    employeeOrder.forEach(function(employeeName) {
+                        var group = employeeGroups[employeeName];
+                        var cards = group.cards;
+                        var totalAmount = group.totalAmount;
+
+                        // 创建员工分组标题，添加折叠按钮
+                        var employeeHeader = $('<div class="employee-header d-flex justify-content-between align-items-center">' +
+                            '<div class="d-flex align-items-center">' +
+                            '<span class="toggle-icon"><i class="icon-material-outline-keyboard-arrow-right"></i></span>' +
+                            '<div>' +
+                            '<h4 class="margin-bottom-5">完成人: ' + employeeName + '</h4>' +
+                            '<span class="badge">共完成 ' + cards.length + ' 个任务</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="total-amount">' +
+                            '<span>总成交金额: </span>' +
+                            '<strong class="price">￥<span>' + totalAmount.toFixed(2) + '</span></strong>' +
+                            '</div>' +
+                            '</div>');
+
+                        // 创建员工任务容器，初始状态为折叠
+                        var employeeTasksList = $('<div class="employee-tasks-list" style="display:none;"></div>');
+
+                        // 添加任务卡片
+                        cards.forEach(function(card) {
+                            employeeTasksList.append(card);
+                        });
+
+                        // 创建员工分组容器并添加所有内容
+                        var employeeGroup = $('<div class="employee-group margin-bottom-35"></div>');
+                        employeeGroup.append(employeeHeader);
+                        employeeGroup.append(employeeTasksList);
+
+                        // 添加到原任务列表区域
+                        tasksList.append(employeeGroup);
+
+                        // 添加点击事件，实现折叠展开功能
+                        employeeHeader.on('click', function() {
+                            var icon = $(this).find('.toggle-icon i');
+                            var tasksList = $(this).next('.employee-tasks-list');
+
+                            if (tasksList.is(':visible')) {
+                                tasksList.slideUp(300);
+                                icon.removeClass('icon-material-outline-keyboard-arrow-right')
+                                    .addClass('icon-material-outline-keyboard-arrow-down');
+                            } else {
+                                tasksList.slideDown(300);
+                                icon.removeClass('icon-material-outline-keyboard-arrow-down')
+                                    .addClass('icon-material-outline-keyboard-arrow-right');
+                            }
+                        });
+                    });
+                });
+            }
         });
     </script>
+
+    <style>
+        .date-selector-wrapper select {
+            min-width: 220px;
+            height: 48px;
+            width: 100%;
+        }
+        
+        .date-selector-wrapper {
+            margin-right: 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .tasks-by-date .date-header {
+            background-color: #f7f7f7;
+            padding: 15px 20px;
+            border-radius: 4px;
+            border-left: 3px solid #2a41e8;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .task-card {
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+        
+        .task-card-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .task-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .task-title a {
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+        
+        .status-badge.completed {
+            background: #40b660;
+            color: white;
+        }
+        
+        .task-time {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .task-card-body {
+            padding: 12px 15px;
+        }
+        
+        .task-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-item label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .info-item strong {
+            color: #333;
+            font-size: 15px;
+        }
+        
+        .price {
+            color: #2a41e8;
+        }
+        
+        .task-card-footer {
+            padding: 12px 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .task-card-footer .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .button.ripple-effect-dark {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-headline {
+                padding: 20px 0;
+            }
+            .dashboard-headline-buttons {
+                margin-top: 15px;
+                width: 100%;
+            }
+            .date-selector-wrapper {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .date-selector-wrapper select {
+                width: 100%;
+            }
+            #batchDownload {
+                width: 100%;
+            }
+            .task-info-grid {
+                grid-template-columns: 1fr;
+            }
+            .task-card-footer {
+                flex-direction: column;
+            }
+            .task-card-footer .button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        .employee-header {
+            background-color: #f7f7f7;
+            padding: 15px 20px;
+            border-radius: 4px;
+            border-left: 3px solid #2a41e8;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .employee-header:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .toggle-icon {
+            margin-right: 15px;
+            font-size: 22px;
+            color: #2a41e8;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #eaeaea;
+            color: #666;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        
+        .total-amount {
+            background-color: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .total-amount .price {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .employee-group {
+            margin-bottom: 30px;
+        }
+        
+        .employee-tasks-list {
+            margin-bottom: 15px;
+            transition: height 0.3s ease-in-out;
+        }
+    </style>
 
 </body>
 

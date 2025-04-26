@@ -137,14 +137,13 @@
             <!-- Dashboard Sidebar / End -->
 
 
-            <!-- Dashboard Content
-        ================================================== -->
+            <!-- Dashboard Content -->
             <div class="dashboard-content-container" data-simplebar>
                 <div class="dashboard-content-inner">
 
                     <!-- Dashboard Headline -->
                     <div class="dashboard-headline">
-                        <h3>提交一个任务</h3>
+                        <h3>发布任务</h3>
                     </div>
 
                     <!-- Row -->
@@ -152,109 +151,235 @@
 
                         <!-- Dashboard Box -->
                         <div class="col-xl-12">
-                            <form method="post" action="/employer/task/post" onsubmit="return postTask()">
-                                <div class="dashboard-box margin-top-0">
+                            <div class="dashboard-box margin-top-0">
 
-                                    <!-- Headline -->
-                                    <div class="headline">
-                                        <h3><i class="icon-feather-folder-plus"></i> 提交任务</h3>
+                                <!-- Headline -->
+                                <div class="headline">
+                                    <h3><i class="icon-feather-folder-plus"></i> 选择发布方式</h3>
+                                </div>
+
+                                <div class="content with-padding">
+                                    <!-- 发布方式选择卡片 -->
+                                    <div class="submit-method-container">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="submit-method-card active" data-method="single">
+                                                    <div class="submit-method-icon">
+                                                        <i class="icon-material-outline-description"></i>
+                                                    </div>
+                                                    <h4>单个发布</h4>
+                                                    <p>逐个填写任务详情，适合发布精细化的任务</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="submit-method-card" data-method="batch">
+                                                    <div class="submit-method-icon">
+                                                        <i class="icon-material-outline-cloud-upload"></i>
+                                                    </div>
+                                                    <h4>批量发布</h4>
+                                                    <p>通过Excel表格批量上传多个任务，提高效率</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4><i class="icon-feather-folder-plus"></i> 批量发布任务</h4>
-                                        <input type="file" name="file" id="mul_tiFile" onchange="checkFile()" accept=".xls,.xlsx" />
-                                        <button type="button" class="button ripple-effect big margin-top-30" onclick="multiPostTask()"><i class="icon-feather-plus"></i> 批量提交任务</button>
+                                </div>
+                            </div>
+
+                            <!-- 单个发布表单 -->
+                            <div id="single-submit-form">
+                                <form method="post" action="/employer/task/post" onsubmit="return postTask()">
+                                    <div class="dashboard-box margin-top-20">
+
+                                        <!-- Headline -->
+                                        <div class="headline">
+                                            <h3><i class="icon-feather-edit-3"></i> 填写任务详情</h3>
+                                        </div>
+
+                                        <div class="content with-padding padding-bottom-10">
+                                            <div class="row">
+
+                                                <div class="col-xl-6">
+                                                    <div class="submit-field">
+                                                        <h5>任务名称</h5>
+                                                        <input name="taskTitle" type="text" class="with-border" placeholder="例如：构建一个 Java WEB 网站" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="submit-field">
+                                                        <h5>任务分类</h5>
+                                                        <select name="categoryId" class="selectpicker with-border" title="请选择任务分类" required>
+                                                            <option th:value="${category.id}" th:each="category : ${taskCategories}">[[${category.categoryName}]]</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-12">
+                                                    <div class="submit-field">
+                                                        <h5>任务简介</h5>
+                                                        <input name="taskProfile" type="text" class="with-border" placeholder="一句话描述您的任务" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="submit-field">
+                                                        <h5>预算金额</h5>
+                                                        <div class="input-with-icon">
+                                                            <input id="feesHigh" name="feesHigh" class="with-border" type="number" step="0.01" placeholder="请输入预算金额" required>
+                                                            <i class="currency">元</i>
+                                                        </div>
+                                                        <div class="submit-field-hint">
+                                                            合理的预算更容易吸引优质人才完成任务
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="submit-field">
+                                                        <h5>任务技能标签 <i class="help-icon" data-tippy-placement="right" title="添加技能标签帮助相关人才更容易找到您的任务"></i></h5>
+                                                        <div class="keywords-container">
+                                                            <div class="keyword-input-container">
+                                                                <input type="text" class="keyword-input with-border" placeholder="添加技能标签" />
+                                                                <button type="button" class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                                                            </div>
+                                                            <div class="keywords-list">
+                                                                <!-- keywords go here -->
+                                                            </div>
+                                                            <div class="clearfix"></div>
+                                                            <input type="hidden" name="skills" id="skills" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-12">
+                                                    <div class="submit-field">
+                                                        <h5>任务详细描述</h5>
+                                                        <textarea name="taskDesc" cols="30" rows="5" class="with-border" placeholder="请详细描述任务需求、完成标准和时间要求等" required></textarea>
+                                                        <div class="submit-field-hint">
+                                                            详细的描述有助于更快更准确地完成任务
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-12">
+                                                    <div class="submit-field">
+                                                        <h5>任务附件 <span class="optional">(可选)</span></h5>
+                                                        <div class="uploadButton margin-top-10">
+                                                            <input onchange="updateFile()" class="uploadButton-input" type="file" accept="image/*, application/pdf" name="upload" id="upload" multiple/>
+                                                            <label class="uploadButton-button ripple-effect" for="upload">上传附件</label>
+                                                            <span class="uploadButton-file-name">仅支持图片和PDF格式，最大10MB</span>
+                                                            <input id="feesFile" th:hidden="true" name="feesFile" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 submit-button-container">
+                                        <button type="submit" class="button ripple-effect big margin-top-30"><i class="icon-feather-check"></i> 提交任务</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- 批量发布表单 -->
+                            <div id="batch-submit-form" style="display: none;">
+                                <div class="dashboard-box margin-top-20">
+                                    <div class="headline">
+                                        <h3><i class="icon-material-outline-cloud-upload"></i> 批量发布任务</h3>
                                     </div>
                                     <div class="content with-padding padding-bottom-10">
                                         <div class="row">
-
-                                            <div class="col-xl-6">
+                                            <div class="col-xl-12">
                                                 <div class="submit-field">
-                                                    <h5>任务名称</h5>
-                                                    <input name="taskTitle" type="text" class="with-border" placeholder="例如：构建一个 Java WEB 网站" required>
+                                                    <h5>上传Excel文件</h5>
+                                                    <div class="uploadButton margin-top-10">
+                                                        <input type="file" name="file" id="mul_tiFile" onchange="checkFile()" accept=".xls,.xlsx" class="uploadButton-input" />
+                                                        <label class="uploadButton-button ripple-effect" for="mul_tiFile">选择Excel文件</label>
+                                                        <span class="uploadButton-file-name">支持.xls和.xlsx格式</span>
+                                                    </div>
+                                                    <div class="submit-field-hint">
+                                                        <a href="#" id="download-template">下载任务模板</a> - 请按照模板格式填写后上传
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-12">
+                                                <div class="submit-field">
+                                                    <h5>公共任务信息</h5>
+                                                    <div class="notification notice">
+                                                        <p>以下信息将应用于所有批量上传的任务</p>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>任务分类</h5>
-                                                    <select name="categoryId" class="selectpicker with-border" title="请选择任务分类" required>
-                                                    <option th:value="${category.id}" th:each="category : ${taskCategories}">[[${category.categoryName}]]</option>
-                                                </select>
+                                                    <select name="batchCategoryId" class="selectpicker with-border" title="请选择任务分类" required>
+                                                        <option th:value="${category.id}" th:each="category : ${taskCategories}">[[${category.categoryName}]]</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>预算金额</h5>
+                                                    <div class="input-with-icon">
+                                                        <input id="batchFeesHigh" name="batchFeesHigh" class="with-border" type="number" step="0.01" placeholder="请输入预算金额" required>
+                                                        <i class="currency">元</i>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-xl-12">
                                                 <div class="submit-field">
                                                     <h5>任务简介</h5>
-                                                    <input name="taskProfile" type="text" class="with-border" placeholder="一句话描述您的任务" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xl-6">
-                                                <div class="submit-field">
-                                                    <h5>您的预算是多少?</h5>
-                                                    <div class="row">
-                                                        <!--                                                    <div class="col-xl-6">-->
-                                                        <!--                                                        <div class="input-with-icon">-->
-                                                        <!--                                                            <input id="feesLow" name="feesLow" class="with-border" type="number" placeholder="最低预算"  required>-->
-                                                        <!--                                                            <i class="currency">元</i>-->
-                                                        <!--                                                        </div>-->
-                                                        <!--                                                    </div>-->
-                                                        <!--                                                    <div class="col-xl-6">-->
-                                                        <!--                                                        <div class="input-with-icon">-->
-                                                        <!--                                                            <input id="feesHigh" name="feesHigh" class="with-border" type="number" placeholder="最高预算" required>-->
-                                                        <!--                                                            <i class="currency">元</i>-->
-                                                        <!--                                                        </div>-->
-
-                                                        <!--                                                        单价可以是小数-->
-                                                        <div class="col-xl-6">
-                                                            <div class="input-with-icon">
-                                                                <input id="feesHigh" name="feesHigh" class="with-border" type="number" step="0.01" placeholder="预算" required>
-                                                                <i class="currency">元</i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xl-6">
-                                                <div class="submit-field">
-                                                    <h5>该任务需要什么技能? <i class="help-icon" data-tippy-placement="right" title="上传技能标签去描述您的任务"></i></h5>
-                                                    <div class="keywords-container">
-                                                        <div class="keyword-input-container">
-                                                            <input type="text" class="keyword-input with-border" placeholder="添加技能" />
-                                                            <button type="button" class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
-                                                        </div>
-                                                        <div class="keywords-list">
-                                                            <!-- keywords go here -->
-                                                        </div>
-                                                        <div class="clearfix"></div>
-                                                        <input type="hidden" name="skills" id="skills" />
-                                                    </div>
-
+                                                    <input name="batchTaskProfile" id="batchTaskProfile" type="text" class="with-border" placeholder="一句话描述您的任务" required>
                                                 </div>
                                             </div>
 
                                             <div class="col-xl-12">
                                                 <div class="submit-field">
-                                                    <h5>任务描述</h5>
-                                                    <textarea name="taskDesc" cols="30" rows="5" class="with-border" required></textarea>
-                                                    <div class="uploadButton margin-top-30">
-                                                        <input onchange="updateFile()" class="uploadButton-input" type="file" accept="image/*, application/pdf" name="upload" id="upload" multiple/>
-                                                        <label class="uploadButton-button ripple-effect" for="upload">上传附件</label>
-                                                        <span class="uploadButton-file-name">只允许上传图片和PDF格式的文件</span>
-                                                        <input id="feesFile" th:hidden="true" name="feesFile" />
+                                                    <h5>任务技能标签</h5>
+                                                    <div class="keywords-container">
+                                                        <div class="keyword-input-container">
+                                                            <input type="text" class="keyword-input with-border" placeholder="添加技能标签" />
+                                                            <button type="button" class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                                                        </div>
+                                                        <div class="keywords-list batch-keywords-list">
+                                                            <!-- keywords go here -->
+                                                        </div>
+                                                        <div class="clearfix"></div>
                                                     </div>
                                                 </div>
                                             </div>
 
+                                            <div class="col-xl-12">
+                                                <div class="submit-field">
+                                                    <h5>任务详细描述</h5>
+                                                    <textarea name="batchTaskDesc" id="batchTaskDesc" cols="30" rows="5" class="with-border" placeholder="请详细描述任务需求、完成标准和时间要求等" required></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-12">
+                                                <div class="submit-field">
+                                                    <h5>任务附件 <span class="optional">(可选)</span></h5>
+                                                    <div class="uploadButton margin-top-10">
+                                                        <input onchange="updateBatchFile()" class="uploadButton-input" type="file" accept="image/*, application/pdf" name="upload" id="batchUpload" multiple/>
+                                                        <label class="uploadButton-button ripple-effect" for="batchUpload">上传附件</label>
+                                                        <span class="uploadButton-file-name">仅支持图片和PDF格式，最大10MB</span>
+                                                        <input id="mulFeesFile" th:hidden="true" name="mulFeesFile" />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-12">
-                                    <button type="submit" class="button ripple-effect big margin-top-30"><i class="icon-feather-plus"></i> 提交任务</button>
+                                <div class="col-xl-12 submit-button-container">
+                                    <button type="button" class="button ripple-effect big margin-top-30" onclick="multiPostTask()"><i class="icon-material-outline-cloud-upload"></i> 批量发布任务</button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                     <!-- Row / End -->
@@ -306,6 +431,30 @@
             if (msg != "") {
                 layer.msg(msg)
             }
+
+            // 发布方式切换
+            $('.submit-method-card').click(function() {
+                $('.submit-method-card').removeClass('active');
+                $(this).addClass('active');
+
+                var method = $(this).data('method');
+                if (method === 'single') {
+                    $('#single-submit-form').slideDown(300);
+                    $('#batch-submit-form').slideUp(300);
+                } else {
+                    $('#single-submit-form').slideUp(300);
+                    $('#batch-submit-form').slideDown(300);
+                }
+            });
+
+            // 下载模板
+            $('#download-template').click(function(e) {
+                e.preventDefault();
+                layer.msg('模板下载中...', {
+                    icon: 1
+                });
+                // 实际下载逻辑这里添加
+            });
         })
 
         /**
@@ -315,8 +464,8 @@
             // var feesLow = Number($("#feesLow").val());
             // var feesHigh = Number($("#feesHigh").val());
             var price = Number($("#feesHigh").val());
-            if (price < 0) {
-                layer.msg('请输入正确的价格')
+            if (price <= 0) {
+                layer.msg('价格必须大于0')
                 return false
             }
 
@@ -362,6 +511,14 @@
         function multiPostTask() {
             // 检查文件是否符合要求
             if (!checkFile()) {
+                return false;
+            }
+
+            // 检查必填字段
+            if (!$('#batchTaskProfile').val() || !$('#batchFeesHigh').val() || !$('#batchTaskDesc').val() || !$('select[name="batchCategoryId"]').val()) {
+                layer.msg('请填写完整批量发布的公共信息', {
+                    icon: 2
+                });
                 return false;
             }
 
@@ -462,7 +619,7 @@
             });
 
             // 获取技能标签
-            var skill = $(".keyword-text");
+            var skill = $(".batch-keywords-list .keyword-text");
             var skillsStr = "";
             for (let i = 0; i < skill.length; i++) {
                 if (i == skill.length - 1) {
@@ -473,15 +630,16 @@
             }
 
             // 从表单获取字段值
-            var categoryId = $("select[name='categoryId']").val();
-            var taskProfile = $("input[name='taskProfile']").val();
-            var feesHigh = $("input[name='feesHigh']").val();
+            var categoryId = $("select[name='batchCategoryId']").val();
+            var taskProfile = $("#batchTaskProfile").val();
+            var feesHigh = $("#batchFeesHigh").val();
             var skills = skillsStr; // 使用上面处理过的技能标签
-            var taskDesc = $("textarea[name='taskDesc']").val();
-            var feesFile = $("#feesFile").val();
-
-            // 检查表单是否完整
+            var taskDesc = $("#batchTaskDesc").val();
+            var feesFile = $("#mulFeesFile").val();
+            console.log(feesFile)
+                // 检查表单是否完整
             if (!categoryId || !taskProfile || !feesHigh || !taskDesc) {
+                console.log(feesFile)
                 layer.close(loadingIndex);
                 layer.msg('请先完成表单填写', {
                     icon: 2
@@ -527,7 +685,7 @@
                     taskDesc: taskDesc,
                     feesFile: feesFile
                 };
-
+                console.log(feesFile)
                 console.log('提交任务数据:', taskData);
 
                 // 发送AJAX请求提交任务
@@ -609,7 +767,122 @@
                     }
             });
         }
+
+        // 上传批量任务附件
+        function updateBatchFile() {
+            $.ajaxFileUpload({
+                url: '/uploadFile', //用于文件上传的服务器端请求地址
+                secureuri: false, //一般设置为false
+                fileElementId: 'batchUpload', //文件上传控件的id属性
+                dataType: 'text', //返回值类型
+                success: function(responseText) //服务器成功响应处理函数
+                    {
+                        var obj = $.parseJSON(responseText.toString().replace(/<.*?>/ig, ""));
+                        $("#mulFeesFile").val(obj.filePath);
+                        layer.alert("批量任务附件上传成功！");
+                    },
+                error: function(xhr, status, error) {
+                    layer.alert("上传失败：" + (error || "未知错误"));
+                }
+            });
+        }
     </script>
+
+    <style>
+        .submit-method-container {
+            margin: 10px 0;
+        }
+        
+        .submit-method-card {
+            background: #fff;
+            border: 2px solid #e4e4e4;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .submit-method-card.active {
+            border-color: #2a41e8;
+            box-shadow: 0 4px 12px rgba(42, 65, 232, 0.15);
+        }
+        
+        .submit-method-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .submit-method-icon {
+            font-size: 36px;
+            color: #2a41e8;
+            margin-bottom: 10px;
+        }
+        
+        .submit-method-card h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+        
+        .submit-method-card p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+        
+        .submit-field-hint {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .submit-field {
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-box {
+            margin-bottom: 15px;
+        }
+        
+        .content.with-padding {
+            padding: 20px;
+        }
+        
+        .content.with-padding.padding-bottom-10 {
+            padding-bottom: 15px;
+        }
+        
+        .submit-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .submit-button-container button {
+            min-width: 200px;
+        }
+        
+        .optional {
+            color: #888;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        /* 调整表单内部的间距 */
+        
+        .dashboard-box .headline {
+            padding: 15px 20px;
+        }
+        
+        .dashboard-content-inner {
+            padding: 30px;
+        }
+        
+        .dashboard-headline {
+            margin-bottom: 20px;
+        }
+    </style>
 
 </body>
 
