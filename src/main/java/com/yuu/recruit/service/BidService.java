@@ -51,12 +51,20 @@ public interface BidService {
     void acceptBid(Long taskId, Long employeeId);
 
     /**
+     * 拒绝投标
+     *
+     * @param taskId 任务 ID
+     * @param employeeId 雇员 ID
+     */
+    void rejectBid(Long taskId, Long employeeId);
+    /**
      * 获取雇员投标任务ID集合
      *
      * @param employeeId 雇员 ID
      * @return
      */
     List<Long> getIdsByEmployeeId(Long employeeId);
+
 }
 
 

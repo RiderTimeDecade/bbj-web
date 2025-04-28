@@ -313,7 +313,7 @@ public class TaskServiceImpl implements TaskService {
         // 设置创建时间
         task.setCreateTime(new Date());
         // 设置任务状态
-        task.setTaskStatus(TaskStatus.UNCHECK);
+        task.setTaskStatus(TaskStatus.NO_BIT);
         // 设置附件名称
         task.setFilename(upload);
         // 插入到数据库

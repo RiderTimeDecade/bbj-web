@@ -125,6 +125,16 @@ public class BidServiceImpl implements BidService {
         bid1.setBidStatus(BidStatus.BIT);
         bidMapper.updateByPrimaryKey(bid1);
     }
+    @Override
+    public void rejectBid(Long taskId, Long employeeId) {
+        // 先查询任务信息
+        Task task = taskMapper.selectByPrimaryKey(taskId);
+        // 设置任务状态
+        task.setTaskStatus(TaskStatus.NO_BIT);
+        // 更新到数据库
+        taskMapper.updateByPrimaryKey(task);
+    }
+    
 }
 
 
