@@ -127,12 +127,12 @@ public class BidServiceImpl implements BidService {
     }
     @Override
     public void rejectBid(Long taskId, Long employeeId) {
-        // 先查询任务信息
-        Task task = taskMapper.selectByPrimaryKey(taskId);
-        // 设置任务状态
-        task.setTaskStatus(TaskStatus.NO_BIT);
-        // 更新到数据库
-        taskMapper.updateByPrimaryKey(task);
+        // 查询投标信息
+        Example example = new Example(Bid.class);
+        example.createCriteria().andEqualTo("taskId", taskId)
+                .andEqualTo("employeeId", employeeId);
+        // 删除数据库中的这条记录
+        bidMapper.deleteByExample(example);
     }
     
 }

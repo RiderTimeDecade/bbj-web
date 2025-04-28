@@ -308,6 +308,19 @@ public class EmployerController {
     }
 
     /**
+     * 拒绝投标
+     *
+     * @param taskId
+     * @param employeeId
+     * @return
+     */
+    @GetMapping("rejectBid")
+    public String rejectBid(Long taskId, Long employeeId) {
+        bidService.rejectBid(taskId, employeeId);
+        return "redirect:/employer/taskBidders?taskId=" + taskId;
+    }
+
+    /**
      * 确定完成任务
      *
      * @param taskId
