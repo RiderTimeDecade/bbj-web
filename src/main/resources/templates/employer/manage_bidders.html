@@ -145,6 +145,7 @@
                     <div class="dashboard-headline">
                         <h3>管理竞标者</h3>
                         <span class="margin-top-7"><a target="_blank" th:href="@{'/task/page?taskId=' + ${task.id}}">[[${task.taskTitle}]]</a> 的竞标者</span>
+                        <a href="/employer/myTasks" class="button ripple-effect margin-top-15"><i class="icon-material-outline-arrow-back"></i> 返回任务列表</a>
                     </div>
 
                     <!-- Row -->
@@ -183,6 +184,8 @@
                                                         <ul class="dashboard-task-info bid-info">
                                                             <li><strong>￥[[${bid.bidPrice}]]</strong><span>投标价格</span></li>
                                                             <li><strong>[[${bid.deliveryDesc}]]</strong><span>完成时间</span></li>
+
+
                                                         </ul>
 
                                                         <!-- 案例图片 -->
@@ -200,7 +203,9 @@
 
                                                         <!-- Buttons -->
                                                         <div class="buttons-to-right always-visible margin-top-25 margin-bottom-0">
-                                                            <a th:href="@{'/employer/acceptBid?taskId=' + ${task.id} + '&employeeId=' + ${bid.employee.id} + '&caseImg=' + ${bid.caseImg}}" class="button ripple-effect"><i class="icon-material-outline-check"></i> 接受投标</a>
+                                                            <a th:href="@{'/employer/acceptBid?taskId=' + ${task.id} + '&employeeId=' + ${bid.employee.id} + '&caseImg=' + ${bid.caseImg}}" class="button ripple-effect">
+                                                                <i class="icon-material-outline-check"></i> 接受投标
+                                                            </a>
                                                             <a th:href="@{'/employer/rejectBid?taskId=' + ${task.id} + '&employeeId=' + ${bid.employee.id}}" class="button ripple-effect">拒绝投标</a>
                                                         </div>
                                                     </div>
@@ -313,6 +318,16 @@
                 }
             });
         });
+
+        // function getTasksWithBids(taskId) {
+        //     $.ajax({
+        //         url: '/employer/taskBidders?taskId=' + taskId,
+        //         type: 'GET',
+        //         success: function(data) {
+        //             // 处理返回的数据
+        //         }
+        //     });
+        // }
     </script>
 
 </body>

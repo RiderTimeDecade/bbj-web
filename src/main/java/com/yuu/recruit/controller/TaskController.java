@@ -90,7 +90,7 @@ public class TaskController {
         model.addAttribute("key", key);
         model.addAttribute("bookMarkedIds", bookMarkedIds);
         model.addAttribute("bidIds", bidIds);
-        
+    
         return "task_list";
     }
 

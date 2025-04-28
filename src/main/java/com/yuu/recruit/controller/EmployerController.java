@@ -277,7 +277,7 @@ public class EmployerController {
      * @return
      */
     @GetMapping("taskBidders")
-    public String manageBidders(Long taskId, Model model) {
+    public String manageBidders(Long taskId, Model model, HttpSession session) {
 
         // 查询任务信息
         TaskVo taskVo = taskService.getById(taskId);
@@ -285,6 +285,14 @@ public class EmployerController {
         // 放置域对象中
         model.addAttribute("task", taskVo);
 
+        // 查询未中标任务且有雇员投标的任务
+         // 查询雇主信息
+         Employer employer = (Employer) session.getAttribute("employer");
+
+         // 查询雇主的所有任务
+         List<TaskVo> taskVos = taskService.getByEmployerId(employer.getId());
+        
+        model.addAttribute("tasks", taskVos);
 
         return "employer/manage_bidders";
     }
@@ -297,14 +305,33 @@ public class EmployerController {
      * @return
      */
     @GetMapping("acceptBid")
-    public String acceptBid(Long taskId, Long employeeId, String caseImg) {
+    public String acceptBid(Long taskId, Long employeeId, String caseImg, HttpSession session) {
         bidService.acceptBid(taskId, employeeId);
         
         //修改中标后直接完成任务
         taskService.submitTask(employeeId, taskId, caseImg);
         taskService.successTask(taskId);
 
-        return "redirect:/employer/myTasks";
+        // 查询雇主信息
+        Employer employer = (Employer) session.getAttribute("employer");
+
+        // 查询雇主的所有任务
+        List<TaskVo> taskVos = taskService.getByEmployerId(employer.getId());
+        
+        // 查找下一个符合条件的任务：未中标且有竞标者
+        Long nextTaskId = null;
+        for (TaskVo task : taskVos) {
+            if (task.getTaskStatus() == 0 && task.getBidVos() != null && !task.getBidVos().isEmpty() && !task.getId().equals(taskId)) {
+                nextTaskId = task.getId();
+                break;
+            }
+        }
+        
+        if(nextTaskId == null){
+            return "redirect:/employer/myTasks";
+        }else {
+            return "redirect:/employer/taskBidders?taskId=" + nextTaskId;
+        }
     }
 
     /**

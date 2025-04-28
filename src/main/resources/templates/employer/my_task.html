@@ -253,6 +253,7 @@
                                                     <span class="task-count" th:text="${#lists.size(tasks.?[taskStatus == 0])}">0</span>
                                                 </h4>
                                             </div>
+                                            <!-- 未中标任务列表 -->
                                             <ul class="dashboard-box-list task-group-content" style="display: none;">
                                                 <li th:each="task : ${tasks}" th:if="${task.taskStatus == 0}">
                                                     <!-- Job Listing -->
