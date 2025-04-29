@@ -342,9 +342,35 @@ public class EmployerController {
      * @return
      */
     @GetMapping("rejectBid")
-    public String rejectBid(Long taskId, Long employeeId) {
+    public String rejectBid(Long taskId, Long employeeId, HttpSession session) {
         bidService.rejectBid(taskId, employeeId);
-        return "redirect:/employer/taskBidders?taskId=" + taskId;
+
+        //判断当前任务是否还有竞标者，如果还有则返回当前页面，没有则执行后面的逻辑
+        TaskVo taskVo = taskService.getById(taskId);
+        if(taskVo.getBidVos() != null && !taskVo.getBidVos().isEmpty()){
+            return "redirect:/employer/taskBidders?taskId=" + taskId;
+        }   
+
+        // 查询雇主信息
+        Employer employer = (Employer) session.getAttribute("employer");
+
+        // 查询雇主的所有任务
+        List<TaskVo> taskVos = taskService.getByEmployerId(employer.getId());
+
+        // 查找下一个符合条件的任务：未中标且有竞标者
+        Long nextTaskId = null;
+        for (TaskVo task : taskVos) {
+            if (task.getTaskStatus() == 0 && task.getBidVos() != null && !task.getBidVos().isEmpty() && !task.getId().equals(taskId)) {
+                nextTaskId = task.getId();
+                break;
+            }
+        }
+
+        if(nextTaskId == null){
+            return "redirect:/employer/myTasks";
+        }else {
+            return "redirect:/employer/taskBidders?taskId=" + nextTaskId;
+        }
     }
 
     /**

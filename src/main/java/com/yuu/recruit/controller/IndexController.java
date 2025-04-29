@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 系统首页控制器
@@ -47,7 +48,7 @@ public class IndexController {
      * @return
      */
     @GetMapping({"", "/index"})
-    public String index(Model model) {
+    public String index(Model model, HttpServletRequest request) {
 
         // 查询所有任务分类, 为什么要用 Vo 对象，因为首页展示的热门分类中需要显示，该分类的任务数量，所以需要创建一个 Vo 对象，来包含分类任务数量信息
         List<TaskCategoryVo> taskCategoryVos = taskCategoryService.getAll();
@@ -75,9 +76,12 @@ public class IndexController {
         model.addAttribute("popularCategories", popularCategories);
         model.addAttribute("recentTasks", recentTaskVos);
 
+        
+        
         return "index";
     }
-
+    
+   
     /**
      * 跳转到注册页面
      *
@@ -200,5 +204,6 @@ public class IndexController {
         }
     }
 
+    
 
 }
