@@ -30,10 +30,10 @@ import com.aliyun.oss.model.PutObjectRequest;
 @Controller
 public class UploadController {
 
-    private static final String ENDPOINT = "oss-cn-shenzhen.aliyuncs.com";
-    private static final String ACCESS_KEY_ID = "LTAI4FkTtw6KQXMzAqJGkqZp";
-    private static final String ACCESS_KEY_SECRET = "woaIN9cCyTdxx4k1KTRFM6ySNzftm7";
-    private static final String BUCKET_NAME = "recruit1";
+    private static final String ENDPOINT = "http://38.246.244.165:9001";
+    private static final String ACCESS_KEY_ID = "oGUkiZGVk5JaZQ98M5w4";
+    private static final String ACCESS_KEY_SECRET = "2QpldyjDwqKnGuizPn1z1R6LWW4GVK37GyXP94JA";
+    private static final String BUCKET_NAME = "mzq";
 
     /**
      * 图片上传

@@ -26,3 +26,9 @@ mybatis:
 
 server:
   port: 80
+
+minio:
+  endpoint: http://your-minio-endpoint:9000
+  access-key: your-access-key
+  secret-key: your-secret-key
+  bucket-name: your-bucket-name
